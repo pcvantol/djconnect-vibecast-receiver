@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>DJConnect VibeCast</title>
+  <script src="//www.gstatic.com/cast/sdk/libs/caf_receiver/v3/cast_receiver_framework.js"></script>
+  <style>
+    :root{color-scheme:dark;--accent:#a982ff;--base:#100a25;--ink:#fbfaff;--muted:#c8c1e1}*{box-sizing:border-box}body{margin:0;min-height:100vh;color:var(--ink);font:system-ui,sans-serif;background:radial-gradient(circle at 20% 15%,color-mix(in srgb,var(--accent) 55%,transparent),transparent 42%),linear-gradient(145deg,#170b38,var(--base))}main{min-height:100vh;padding:7vh 8vw;display:grid;align-content:end;gap:1rem}small{letter-spacing:.17em;font-weight:700;color:var(--muted)}h1{font-size:clamp(2.2rem,7vw,7rem);line-height:.96;margin:0;max-width:16ch}p{font-size:clamp(1.1rem,2.2vw,2rem);margin:0;color:var(--muted)}progress{width:min(34rem,100%);height:.35rem;accent-color:var(--accent)}[hidden]{display:none!important}
+  </style>
+</head>
+<body>
+  <main>
+    <small id="brand">DJCONNECT VIBECAST</small>
+    <h1 id="title">Ready when your session starts</h1>
+    <p id="artist">Choose this display from DJConnect.</p>
+    <progress id="progress" value="0" max="1" hidden></progress>
+  </main>
+  <script>
+    (() => {
+      "use strict";
+      const NAMESPACE = "urn:x-cast:com.djconnect.vibecast.v1";
+      const copy = {
+        en:{idle:"Ready when your session starts",hint:"Choose this display from DJConnect.",live:"Now playing"},
+        nl:{idle:"Klaar wanneer je sessie begint",hint:"Kies dit scherm vanuit DJConnect.",live:"Nu speelt"},
+        de:{idle:"Bereit, wenn deine Session beginnt",hint:"Wähle dieses Display in DJConnect.",live:"Läuft gerade"},
+        fr:{idle:"Prêt lorsque votre session commence",hint:"Choisissez cet écran dans DJConnect.",live:"En cours de lecture"},
+        es:{idle:"Listo cuando comience tu sesión",hint:"Elige esta pantalla desde DJConnect.",live:"Reproduciendo"}
+      };
+      const elements = {title:document.getElementById("title"),artist:document.getElementById("artist"),progress:document.getElementById("progress")};
+      let language = "en", handoff, socket, reconnectTimer;
+      const words = () => copy[language] || copy.en;
+      const idle = () => { clearTimeout(reconnectTimer); handoff = undefined; socket?.close(); socket = undefined; elements.title.textContent=words().idle; elements.artist.textContent=words().hint; elements.progress.hidden=true; };
+      const safeHandoff = value => {
+        if (!value || value.kind !== "vibecast_handoff" || value.version !== 1 || typeof value.session_id !== "string" || typeof value.broadcast_token !== "string" || value.session_id.length > 180 || value.broadcast_token.length < 24) throw new Error("invalid_handoff");
+        const ha = new URL(value.ha_url);
+        if (!/^https?:$/.test(ha.protocol) || ha.username || ha.password) throw new Error("invalid_ha_url");
+        return {ha_url:ha.origin,session_id:value.session_id,broadcast_token:value.broadcast_token,locale:typeof value.locale === "string" ? value.locale : "en"};
+      };
+      const render = snapshot => { const playback=snapshot?.playback||{}, moment=(snapshot?.dj_moments||[])[0]||{}; const title=playback.title||playback.track?.title||moment.title||words().live; const artist=playback.artist||playback.track?.artist||moment.summary||words().live; elements.title.textContent=title; elements.artist.textContent=artist; const duration=Number(playback.duration_ms), position=Number(playback.position_ms); elements.progress.hidden=!(duration>0); elements.progress.max=duration||1; elements.progress.value=Math.max(0,position||0); const mood=snapshot?.session?.selected_mood; document.documentElement.style.setProperty("--accent",({chill:"#73d8ff",groove:"#a982ff",energy:"#ff8a67",party:"#ffc64c"})[mood]||"#a982ff"); };
+      const wsURL = () => { const base=new URL(handoff.ha_url); base.protocol=base.protocol === "https:" ? "wss:" : "ws:"; base.pathname=`/api/djconnect/v1/session/broadcast/ws/${encodeURIComponent(handoff.session_id)}`; base.search=`broadcast_token=${encodeURIComponent(handoff.broadcast_token)}`; return base.href; };
+      const connect = () => { if (!handoff) return; socket = new WebSocket(wsURL()); socket.onmessage=event => { try { const message=JSON.parse(event.data); if(message.type === "snapshot") render(message.snapshot); if(message.type === "event") render(message.data?.snapshot || message.data?.payload); if(message.type === "error") idle(); } catch { idle(); } }; socket.onclose=() => { if(handoff) reconnectTimer=setTimeout(connect,1500); }; socket.onerror=() => socket.close(); };
+      const receive = message => { try { const payload=typeof message.data === "string" ? JSON.parse(message.data) : message.data; handoff=safeHandoff(payload); language=handoff.locale.slice(0,2).toLowerCase(); if(socket){socket.onclose=null;socket.close();socket=undefined;} connect(); } catch { idle(); } };
+      if (!window.cast?.framework) { idle(); return; }
+      const context=cast.framework.CastReceiverContext.getInstance();
+      context.getCastMessageBus(NAMESPACE).onMessage=receive;
+      context.start();
+      window.addEventListener("beforeunload",idle);
+    })();
+  </script>
+</body>
+</html>
