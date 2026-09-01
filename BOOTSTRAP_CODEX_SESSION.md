@@ -1,5 +1,3 @@
-# Bootstrap
+# Compatibility bootstrap pointer
 
-Verify clean `main`, read `AGENTS.md`, `CANONICAL_REFERENCES.md`,
-`REPOSITORY_STATUS.md` and the task-relevant canonical DJConnect document.
-Run `npm test` before handoff.
+Read `BOOTSTRAP.md`. It leads to the committed offline projection and local receiver extension.
