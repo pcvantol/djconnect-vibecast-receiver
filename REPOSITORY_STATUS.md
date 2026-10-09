@@ -15,8 +15,11 @@ Offline import/verification and negative tests prepared. See
 
 **Delivery state:** local candidate; independent local software review GO; 14 tests and 10 browser scenarios PASS. Required remote
 checks/protected delivery/exact-main readback/Finalization pending. Push held
-until external Cloudflare Git effects and publication authority are known.
-Pages project/URL, public Cast App ID and device are UNKNOWN. Real CAF/physical
+for specific publication approval. Known existing Pages project: `djconnect-vibecast-receiver`,
+output `wwwroot`, automatic main production deployment; branch push may publish a preview.
+Fixed URL `https://receiver.djconnect.dev/`, Cast App ID `8EA92910`, test target
+The Frame/Ready For Testing. Current HTTPS Pages baseline equals main `a901fbc`.
+See [publication proposal](docs/qualification/2026-10-09-publication-proposal.md). Real CAF/physical
 Cast/Apple sender qualification NOT_RUN/OPEN; no full COMPLETE claim.
 
 Apple keeps its sole conversation/history writer. Registered sender follow-up:

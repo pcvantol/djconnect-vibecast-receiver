@@ -118,7 +118,7 @@ exclude an external Cloudflare Git integration. Before any push or merge,
 inspect the existing Pages project's connected repository, production branch,
 preview branch filters, auto-deploy settings, build command/output and domains.
 No branch-filter or Git integration setting change should be assumed authorized.
-Unknown external triggers mean hold the push, including a draft PR push.
+Preview filters remain unverified. Treat every source branch push as a possible public preview; owner approval must explicitly cover this conservative effect. Main merge automatically promotes production according to the supplied owner evidence.
 
 Before promotion, record exact reviewed receiver commit/tree, build/manifest
 hashes, Pages project and fixed HTTPS URL, public App ID, deployment effects
@@ -131,9 +131,13 @@ loads during promotion; do not claim cache/update behavior from a source rule.
 
 Browser UI automation is currently unavailable because CUA rejects the host's
 symlinked CODEX_HOME writable root. No configuration repair was attempted.
-Pages project/URL, Cast App ID and hardware have been requested from the owner;
-they remain UNKNOWN until authoritative readback. Publication and hardware
-approval must name the concrete effects/resources, not a generic continuation.
+Owner configuration evidence now identifies project `djconnect-vibecast-receiver`,
+output `wwwroot`, production branch `main` with automatic deployments enabled,
+App ID `8EA92910`, fixed URL `https://receiver.djconnect.dev/`, and registered
+test target The Frame (Ready For Testing). See [the bounded publication
+proposal](qualification/2026-10-09-publication-proposal.md) for current readback,
+remaining boundaries and rollback. These screenshots identify existing resources;
+specific publication/device-effect approval still names the concrete candidate.
 
 ## Acceptance and evidence labels
 
@@ -142,9 +146,9 @@ approval must name the concrete effects/resources, not a generic continuation.
 | BUILD_ADOPTION | Local pinned Core verifier, archive/manifest/renderer/output equality; adversarial importer tests |
 | DISTRIBUTION_BROWSER_QUAL | 10 local Chrome viewport/language scenarios PASS with modeled CAF/HA; real distribution/network acceptance pending |
 | REAL_CAF_QUAL | NOT_RUN; hosted SDK/device launch/message/readiness/idle/shutdown pending |
-| PAGES_DEPLOYMENT | NOT_RUN; project/Git triggers/URL/authority/readback missing |
+| PAGES_DEPLOYMENT | Existing production baseline independently read back; candidate promotion NOT_RUN, specific publication approval pending |
 | APPLE_SENDER_QUAL | OPEN; owning registered follow-up, current conversation/history WIP preserved |
-| GOOGLE_CAST_TV_QUAL | NOT_RUN; device/AppID/authorized reachable compatible HA missing |
+| GOOGLE_CAST_TV_QUAL | NOT_RUN; The Frame/AppID identified, device discovery/launch and compatible authorized HA route pending |
 | native macOS | Separate supported sender-route qualification needed |
 
 The Core producer's eleven real isolated TLS/HA/Broadcast/browser sequences are
