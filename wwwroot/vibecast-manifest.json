@@ -1,0 +1,29 @@
+{
+  "build_version": "1.0.0",
+  "contracts": {
+    "broadcast_transport": "snapshot-event-v1",
+    "cast_handoff_versions": [
+      1
+    ],
+    "required_capabilities": {
+      "owner_controls": false,
+      "view_broadcast": true
+    }
+  },
+  "files": {
+    "cast/index.html": "060b6f140a766e218593d0574949cdc8a5cd74cdca21483565cf5cd8dc152701",
+    "local/vibecast.html": "6d75d28280596d9cc7a4b84c0d810379a527eddeb8ce5448ce4fef0e43c2a560"
+  },
+  "private_runtime_data_in_build": false,
+  "promotion": "explicit receiver-owner import; no automatic deployment",
+  "renderer_source_sha256": "2f08d8f0a82db1749ef97ff5508dd64016b35f14878abdcd5f3475f27bfec276",
+  "schema_version": 1,
+  "source_revision": "7460ef5e1d4c15888569b857d7c636620ace7e37",
+  "sources": {
+    "cast-host.js": "bef7d14600761b9b84c3f20e9669fb38b4614d0a2886c94710539860a7013313",
+    "local-host.js": "d13b693b8c983db1e171f9a5373301bd7359f7f3de555819dc2931c08d317a0e",
+    "renderer.js": "2f08d8f0a82db1749ef97ff5508dd64016b35f14878abdcd5f3475f27bfec276",
+    "style.css": "6f32448f84e06e5d2bb4241503af9247843b834f506f9f564402f8072d5b925e",
+    "template.html": "698eb9bc06fa5e14618f178996a612d10c514f1559026da12a32919e34c87ed6"
+  }
+}

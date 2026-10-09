@@ -2,6 +2,10 @@
   "name": "djconnect-vibecast-receiver",
   "version": "0.1.0",
   "private": true,
-  "scripts": { "test": "node --test" },
+  "scripts": {
+    "test": "python3 scripts/import_vibecast.py --check && node --test && python3 -m unittest discover -s tests -p \"*_test.py\"",
+    "import:core": "python3 scripts/import_vibecast.py",
+    "verify:core": "python3 scripts/import_vibecast.py --check"
+  },
   "license": "MIT"
 }
