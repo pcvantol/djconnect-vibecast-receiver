@@ -140,7 +140,7 @@ approval must name the concrete effects/resources, not a generic continuation.
 | Gate | Current evidence / remaining condition |
 | --- | --- |
 | BUILD_ADOPTION | Local pinned Core verifier, archive/manifest/renderer/output equality; adversarial importer tests |
-| DISTRIBUTION_BROWSER_QUAL | Imported-byte VM/DOM/WS contract tests only; actual browser/network/layout acceptance pending |
+| DISTRIBUTION_BROWSER_QUAL | 10 local Chrome viewport/language scenarios PASS with modeled CAF/HA; real distribution/network acceptance pending |
 | REAL_CAF_QUAL | NOT_RUN; hosted SDK/device launch/message/readiness/idle/shutdown pending |
 | PAGES_DEPLOYMENT | NOT_RUN; project/Git triggers/URL/authority/readback missing |
 | APPLE_SENDER_QUAL | OPEN; owning registered follow-up, current conversation/history WIP preserved |

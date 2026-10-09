@@ -13,7 +13,7 @@ shared build 1.0.0, manifest `72239b476e793fe5bb5493d2be5720fcd1f6e64ea83e012c77
 Offline import/verification and negative tests prepared. See
 [adoption runbook](docs/CAST_ADOPTION.md) for exact pins, rollback and acceptance.
 
-**Delivery state:** local candidate; independent review pending, required remote
+**Delivery state:** local candidate; independent local software review GO; 14 tests and 10 browser scenarios PASS. Required remote
 checks/protected delivery/exact-main readback/Finalization pending. Push held
 until external Cloudflare Git effects and publication authority are known.
 Pages project/URL, public Cast App ID and device are UNKNOWN. Real CAF/physical
