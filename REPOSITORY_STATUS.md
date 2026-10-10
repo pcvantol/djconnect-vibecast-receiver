@@ -1,28 +1,38 @@
 # Repository status
 
-**Role:** stateless VibeCast Google Cast Custom Web Receiver distribution.
-Core owns the shared renderer and all host-adapter source.
+**Role:** stateless Google Cast Custom Web Receiver distribution. Core owns all
+shared renderer/adapter source; Apple owns native sender UI.
 
-**Current assignment:** `DJC-VIBECAST-CAST-RECEIVER-ADOPTION-V1-20261009`.
-ACK/actual base/branch/first material: [#10/6083184705](https://github.com/pcvantol/djconnect-vibecast-receiver/issues/10#issuecomment-6083184705).
-Base `a901fbcd3e894af62b63fafbca8f96738e08ce3c`; isolated source writer branch
-`codex/djc-vibecast-cast-receiver-adoption-v1-20261009`.
+**Assignment:** `DJC-VIBECAST-CAST-RECEIVER-ADOPTION-V1-20261009`.
+Original basea901fbc; sole pickup ACK/first-source receiver#10/6083184705 retained.
 
-Pinned published Core supplying `7460ef5e1d4c15888569b857d7c636620ace7e37`,
-shared build 1.0.0, manifest `72239b476e793fe5bb5493d2be5720fcd1f6e64ea83e012c77573732a58c7898`.
-Offline import/verification and negative tests prepared. See
-[adoption runbook](docs/CAST_ADOPTION.md) for exact pins, rollback and acceptance.
+**Source delivery:** [protected PR #11](https://github.com/pcvantol/djconnect-vibecast-receiver/pull/11)
+merged32e409b2d190db7e06754cc6e153dc991be4b8d3 from approved/reviewedfcc686a;
+exact reviewed-tree equality, requiredchecks and mainchecks PASS. Core1.0.0
+supplying7460ef5e retained, no generated HTML patches.
 
-**Delivery state:** local candidate; independent local software review GO; 14 tests and 10 browser scenarios PASS. Required remote
-checks/protected delivery/exact-main readback/Finalization pending. Push held
-for specific publication approval. Known existing Pages project: `djconnect-vibecast-receiver`,
-output `wwwroot`, automatic main production deployment; branch push may publish a preview.
-Fixed URL `https://receiver.djconnect.dev/`, Cast App ID `8EA92910`, test target
-The Frame/Ready For Testing. Current HTTPS Pages baseline equals main `a901fbc`.
-See [publication proposal](docs/qualification/2026-10-09-publication-proposal.md). Real CAF/physical
-Cast/Apple sender qualification NOT_RUN/OPEN; no full COMPLETE claim.
+**Pages:** PASS for actual approved preview and production. Both existing
+https://receiver.djconnect.dev/ and https://djconnect-vibecast-receiver.pages.dev/
+serve exact shared HTML/manifest bytes, correct content types and final-response
+no-store/no-referrer/nosniff. See [source/Finalization receipt](docs/qualification/2026-10-10-source-finalization.md)
+and [machine-readable evidence](docs/qualification/source-publication-receipt.json).
 
-Apple keeps its sole conversation/history writer. Registered sender follow-up:
-`DJC-APPLE-VIBECAST-CAST-SENDER-V1-20261009`; early read-only contract coordination
-sent. No Swift/Core source write, HA deployment/config, Console mutation,
-signing, account/cost, LG package, Windows work or extra capability.
+**Finalization record:** the linked receipt fixes the source/Pages component
+results and residual acceptance gates. At preparation of this record, its
+documentation delivery is pending. Exact approval, protected documentation merge
+and final-main/deployment readback will be recorded in owning issue #10 after
+they occur; that register supplies the current completion status. Source/main
+reconciled clean. Documentation push/merge may redeploy unchanged static bytes
+under the existing automatic Pages integration.
+
+**Integrated acceptance:** OPEN. App8EA92910 / fixed receiver URL / registered
+The Frame target identified; realCAF, actual HA/network/installedcompatibility,
+physicalCast and nativeApple sender remain unqualified.10 modeled browser cases
+and static deployment do not close fullApple→tvacceptance. Core's new1.1.0 status
+candidate last supplied unpublished; consume only after exact producerpublication/
+pins/delta review. Current1.0.0 is not silently upgraded.
+
+Apple conversation/history writer/lab preserved; its registered sender follow-up
+retains own admission. No Core/Swift writer, Console effect, HA update/config,
+signing/install, hardware operation, account/cost, LG package, Windows or extra
+capability. Source recovery/evidence retained; no branch cleanup or monitor.
