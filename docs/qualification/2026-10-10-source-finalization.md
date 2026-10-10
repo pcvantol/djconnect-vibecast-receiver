@@ -71,16 +71,17 @@ branch deletion occurred. Full source recovery bundle and checksum-verified
 browser/HTTPS evidence retained. Hostverify on this delivery exit0/MATCH,
 manifest3.3.0/bootstrap2.0.21/onboarding4.5.3, all required rows MATCH, no repair.
 
-This document is the concrete Finalization candidate prepared after actual
-source/main/deployment readback. Its commit/review identity is recorded outside
-its own tree. Finalization publication remains pending separate exact approval;
-possible preview and automatic main Pages redeployment apply even to docs.
-The proposal changes no webroot/source lock/importer/test/renderer bytes. After
-its approved protected merge, verify new main tree/checks and unchanged served
-HTML/manifest. Source delivery is already real; full integrated acceptance is
-not complete. RepositoryState SOURCE_MERGED_RECONCILED;
-FinalizationPending YES until protected documentation delivery; component
-software/Pages delivery PASS, integrated outcome OPEN.
+This Finalization record was prepared after actual source/main/deployment
+readback. Its exact commit/review/approval, protected documentation merge and
+final-main/deployment readback identities are recorded in owning issue #10
+outside its own tree. Possible preview and automatic main Pages redeployment
+apply even to docs. The record changes no webroot/source lock/importer/test/
+renderer bytes. Its protected delivery is qualified only after approved merge,
+new main tree/checks and unchanged served HTML/manifest readback. Until then
+execution FinalizationPending remains YES; after those receipts, component
+RepositoryState MERGED_RECONCILED and FinalizationPending NO. Component software/
+Pages delivery PASS; full integrated outcome OPEN regardless of documentation
+completion. No full Cast COMPLETE is implied.
 
 ## Producer/Apple/device handoff and residual gates
 

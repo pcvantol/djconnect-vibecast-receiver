@@ -17,10 +17,11 @@ serve exact shared HTML/manifest bytes, correct content types and final-response
 no-store/no-referrer/nosniff. See [source/Finalization receipt](docs/qualification/2026-10-10-source-finalization.md)
 and [machine-readable evidence](docs/qualification/source-publication-receipt.json).
 
-**Finalization:** concrete documentation candidate; exact publication approval
-and protected documentation delivery still pending. Source/main reconciled clean;
-FinalizationPending YES. Documentation push/merge may redeploy unchanged static
-bytes under existing automatic Pages integration.
+**Finalization record:** the linked receipt fixes the source/Pages component
+results and residual acceptance gates. Its exact approved candidate, protected
+documentation merge and final-main/deployment readback are recorded in owning
+issue #10. Source/main reconciled clean. Documentation push/merge may redeploy
+unchanged static bytes under the existing automatic Pages integration.
 
 **Integrated acceptance:** OPEN. App8EA92910 / fixed receiver URL / registered
 The Frame target identified; realCAF, actual HA/network/installedcompatibility,
