@@ -1,38 +1,32 @@
 # Repository status
 
-**Role:** stateless Google Cast Custom Web Receiver distribution. Core owns all
-shared renderer/adapter source; Apple owns native sender UI.
+**Role:** static Google Cast receiver distribution; Core owns renderer/adapters,
+Apple owns native sender. No second Core/Apple writer.
 
-**Assignment:** `DJC-VIBECAST-CAST-RECEIVER-ADOPTION-V1-20261009`.
-Original basea901fbc; sole pickup ACK/first-source receiver#10/6083184705 retained.
+**Parent product:** DJC-VIBECAST-CAST-RECEIVER-ADOPTION-V1-20261009.
+Closed source/Finalization #11/#12 remain delivered on eeecc93; their1.0.0 Pages
+receipts remain historical.
 
-**Source delivery:** [protected PR #11](https://github.com/pcvantol/djconnect-vibecast-receiver/pull/11)
-merged32e409b2d190db7e06754cc6e153dc991be4b8d3 from approved/reviewedfcc686a;
-exact reviewed-tree equality, requiredchecks and mainchecks PASS. Core1.0.0
-supplying7460ef5e retained, no generated HTML patches.
+**Current increment:** DJC-VIBECAST-CAST-STATUS-ADOPTION-V1-20261010, same executor.
+ACK6095243668; qualified admission/actual base/branch/first-source6095278036.
+Base eeecc93b5634d9d9014de60183917835835bf85e; branch
+codex/djc-vibecast-cast-status-adoption-v1-20261010.
 
-**Pages:** PASS for actual approved preview and production. Both existing
-https://receiver.djconnect.dev/ and https://djconnect-vibecast-receiver.pages.dev/
-serve exact shared HTML/manifest bytes, correct content types and final-response
-no-store/no-referrer/nosniff. See [source/Finalization receipt](docs/qualification/2026-10-10-source-finalization.md)
-and [machine-readable evidence](docs/qualification/source-publication-receipt.json).
+**Local candidate:** exact published Core1.1.0 supplyingd7396554, matching unchanged
+verifier, pinned import and33tests PASS; ten modeled browser scenarios PASS.
+[Delta/status/publication proposal](docs/CAST_STATUS_ADOPTION_1_1.md).
+Independent receiving review and exact candidate source-publication gate pending;
+no increment push/Pages promotion yet. Current known served1.0.0 remains rollback
+baseline, not evidence for newbytes. FinalizationPending YES.
 
-**Finalization record:** the linked receipt fixes the source/Pages component
-results and residual acceptance gates. At preparation of this record, its
-documentation delivery is pending. Exact approval, protected documentation merge
-and final-main/deployment readback will be recorded in owning issue #10 after
-they occur; that register supplies the current completion status. Source/main
-reconciled clean. Documentation push/merge may redeploy unchanged static bytes
-under the existing automatic Pages integration.
+**Known environment:** existing Pages djconnect-vibecast-receiver/wwwroot/main
+with automatic production and possible public previews; fixed
+https://receiver.djconnect.dev/, app8EA92910, The Frame/Ready For Testing.
+Source and future docs Finalization effects/rollback are bounded in the proposal.
 
-**Integrated acceptance:** OPEN. App8EA92910 / fixed receiver URL / registered
-The Frame target identified; realCAF, actual HA/network/installedcompatibility,
-physicalCast and nativeApple sender remain unqualified.10 modeled browser cases
-and static deployment do not close fullApple→tvacceptance. Core's new1.1.0 status
-candidate last supplied unpublished; consume only after exact producerpublication/
-pins/delta review. Current1.0.0 is not silently upgraded.
-
-Apple conversation/history writer/lab preserved; its registered sender follow-up
-retains own admission. No Core/Swift writer, Console effect, HA update/config,
-signing/install, hardware operation, account/cost, LG package, Windows or extra
-capability. Source recovery/evidence retained; no branch cleanup or monitor.
+**Acceptance:** BUILD_ADOPTION local PASS; CAST_STATUS_CONTRACT modeledsoftware;
+new PAGES_DEPLOYMENT NOT_RUN; realCAF/nativeApple/TheFrame OPEN/NOT_RUN.
+Heartbeat is appliedreceiverstate, not independent HAhealth/physicalvisibility.
+No actual installedHA/network qualification, Console/HA/signing/device effects,
+LG/Windows/new accounts/extra capability. Apple WIP and separate Core auth lane
+preserved. Stop after this1.1.0 adoption and own Finalization; joint outcome OPEN.
