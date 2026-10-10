@@ -1,5 +1,10 @@
 # Pinned Core Cast adoption
 
+The 1.0.0 receipts below remain historical. The selected 1.1.0 increment,
+matching verifier, status contract and new publication boundary are recorded in
+[CAST_STATUS_ADOPTION_1_1.md](CAST_STATUS_ADOPTION_1_1.md). Its new bytes require
+a new exact review/promotion; previous hardware boundaries remain unchanged.
+
 Assignment: `DJC-VIBECAST-CAST-RECEIVER-ADOPTION-V1-20261009`.
 Receiver owns distribution only. Core owns every renderer/adapter source byte;
 Apple owns `DJC-APPLE-VIBECAST-CAST-SENDER-V1-20261009`. Personal conversations,

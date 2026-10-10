@@ -10,9 +10,10 @@ function host(lang = 'en', caf = true) {
   const context = {
     addCustomMessageListener(name, callback) { namespace = name; receive = callback; },
     start(value) { options = value; },
+    addEventListener() {}, isSystemReady: () => true,
   };
   const window = {dispatchEvent(event) { events.push(event); }, addEventListener(name, callback) { listeners.set(name, callback); }};
-  if (caf) window.cast = {framework: {CastReceiverContext: {getInstance: () => context}}};
+  if (caf) window.cast = {framework: {CastReceiverContext: {getInstance: () => context}, system: {EventType: {READY: 'ready', SENDER_DISCONNECTED: 'disconnected'}, MessageType: {JSON: 'JSON'}}}};
   vm.runInNewContext(adapter, {window, URL, CustomEvent: class {constructor(type, value = {}) {this.type = type; this.detail = value.detail;}}, document: {documentElement: {lang}, getElementById: () => state}});
   return {events, listeners, state, receive, namespace, options};
 }
@@ -28,7 +29,7 @@ test('modeled CAF adapter retains namespace, idle policy, and read-only handoff'
   const h = host(); assert.equal(h.namespace, 'urn:x-cast:com.djconnect.vibecast.v1'); assert.equal(h.options.disableIdleTimeout, false);
   h.receive({data: JSON.stringify({...valid, end_grant: 'ignored', history: 'private', locale: 'nl'})});
   assert.equal(h.events[0].type, 'djconnect-handoff');
-  assert.deepEqual(JSON.parse(JSON.stringify(h.events[0].detail)), {ha_url: valid.ha_url, session_id: valid.session_id, broadcast_token: valid.broadcast_token});
+  assert.deepEqual(JSON.parse(JSON.stringify(h.events[0].detail)), {ha_url: valid.ha_url, session_id: valid.session_id, broadcast_token: valid.broadcast_token, status_generation: 1});
   h.listeners.get('beforeunload')(); assert.equal(h.events.at(-1).type, 'djconnect-host-stop');
 });
 test('invalid handoffs fail closed with feedback in five languages', () => {

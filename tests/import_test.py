@@ -81,4 +81,40 @@ class ImportTest(unittest.TestCase):
         for value in ['/tmp/external','../external']:
             self.lock['verifier_file']=value; self.write_lock()
             with self.assertRaises(ValueError): self.adopt()
+
+class HistoricalRollbackTest(unittest.TestCase):
+    def test_old_pin_and_verifier_restore_exact_legacy_build_then_new_pin_restores_candidate(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp).resolve()
+            shutil.copytree(ROOT/'vendor',root/'vendor')
+            shutil.copytree(ROOT/'wwwroot',root/'wwwroot')
+            old=ROOT/'vibecast-source-lock-1.0.0.json'
+            importer.adopt(old,root=root)
+            page=root/'wwwroot/index.html'
+            self.assertEqual(importer.sha256(page.read_bytes()),'060b6f140a766e218593d0574949cdc8a5cd74cdca21483565cf5cd8dc152701')
+            self.assertEqual(importer.sha256((root/'wwwroot/vibecast-manifest.json').read_bytes()),'72239b476e793fe5bb5493d2be5720fcd1f6e64ea83e012c77573732a58c7898')
+            importer.adopt(ROOT/'vibecast-source-lock.json',root=root)
+            self.assertEqual(page.read_bytes(),(ROOT/'wwwroot/index.html').read_bytes())
+            importer.adopt(ROOT/'vibecast-source-lock.json',root=root,check=True)
+
+class LocalHostBoundaryTest(unittest.TestCase):
+    def test_local_pi_adapter_unchanged_and_both_entries_share_the_pinned_renderer(self):
+        import runpy
+        old=json.loads((ROOT/'vibecast-source-lock-1.0.0.json').read_text())
+        new=json.loads((ROOT/'vibecast-source-lock.json').read_text())
+        core=runpy.run_path(str(ROOT/new['verifier_file']))
+        with tempfile.TemporaryDirectory() as temp:
+            previous=Path(temp)/'old'; current=Path(temp)/'new'
+            previous.mkdir(); current.mkdir()
+            importer.extract(ROOT/old['bundle_file'],previous)
+            importer.extract(ROOT/new['bundle_file'],current)
+            scripts=[]
+            for folder in [previous,current]:
+                parser=core['InlineScripts']();parser.feed((folder/'local/vibecast.html').read_text());scripts.append(parser.scripts)
+            self.assertEqual(scripts[0][1],scripts[1][1])
+            self.assertNotIn('gstatic.com',(current/'local/vibecast.html').read_text())
+            self.assertNotIn('DJC_VIBECAST_MODE = "cast"',scripts[1][0])
+            parser=core['InlineScripts']();parser.feed((current/'cast/index.html').read_text())
+            self.assertEqual(parser.scripts[0].removeprefix('window.DJC_VIBECAST_MODE = "cast";\n'),scripts[1][0])
+
 if __name__=='__main__': unittest.main()
