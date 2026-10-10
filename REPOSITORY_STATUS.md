@@ -18,10 +18,12 @@ no-store/no-referrer/nosniff. See [source/Finalization receipt](docs/qualificati
 and [machine-readable evidence](docs/qualification/source-publication-receipt.json).
 
 **Finalization record:** the linked receipt fixes the source/Pages component
-results and residual acceptance gates. Its exact approved candidate, protected
-documentation merge and final-main/deployment readback are recorded in owning
-issue #10. Source/main reconciled clean. Documentation push/merge may redeploy
-unchanged static bytes under the existing automatic Pages integration.
+results and residual acceptance gates. At preparation of this record, its
+documentation delivery is pending. Exact approval, protected documentation merge
+and final-main/deployment readback will be recorded in owning issue #10 after
+they occur; that register supplies the current completion status. Source/main
+reconciled clean. Documentation push/merge may redeploy unchanged static bytes
+under the existing automatic Pages integration.
 
 **Integrated acceptance:** OPEN. App8EA92910 / fixed receiver URL / registered
 The Frame target identified; realCAF, actual HA/network/installedcompatibility,

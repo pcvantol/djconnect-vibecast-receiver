@@ -72,9 +72,10 @@ browser/HTTPS evidence retained. Hostverify on this delivery exit0/MATCH,
 manifest3.3.0/bootstrap2.0.21/onboarding4.5.3, all required rows MATCH, no repair.
 
 This Finalization record was prepared after actual source/main/deployment
-readback. Its exact commit/review/approval, protected documentation merge and
-final-main/deployment readback identities are recorded in owning issue #10
-outside its own tree. Possible preview and automatic main Pages redeployment
+readback. At preparation, its documentation delivery is pending. Exact
+commit/review/approval, protected documentation merge and final-main/deployment
+readback identities will be recorded in owning issue #10 after the corresponding
+steps actually occur, outside this record's own tree. Possible preview and automatic main Pages redeployment
 apply even to docs. The record changes no webroot/source lock/importer/test/
 renderer bytes. Its protected delivery is qualified only after approved merge,
 new main tree/checks and unchanged served HTML/manifest readback. Until then
