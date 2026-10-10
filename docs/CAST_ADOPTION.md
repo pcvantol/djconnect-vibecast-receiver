@@ -111,16 +111,16 @@ no-store, no-referrer, nosniff, frame deny, existing HSTS/permissions policy.
 No new CSP policy is asserted; no existing CSP was removed. No Functions,
 analytics, proxy, storage, CORS authority or credentials are included.
 
-2026-10-09 GitHub readback: hooks[], deployments[], no open receiver PR;
+2026-10-09 pre-publication GitHub readback: hooks[], deployments[], no open receiver PR;
 workflows run test/projection with contents:read. Protected main requires strict
 `test`, enforces admins, linear history, no force push. These facts **do not**
 exclude an external Cloudflare Git integration. Before any push or merge,
 inspect the existing Pages project's connected repository, production branch,
 preview branch filters, auto-deploy settings, build command/output and domains.
 No branch-filter or Git integration setting change should be assumed authorized.
-Preview filters remain unverified. Treat every source branch push as a possible public preview; owner approval must explicitly cover this conservative effect. Main merge automatically promotes production according to the supplied owner evidence.
+Other preview filters remain unverified. This source branch actually published a preview on approval; the protected main merge published production. New exact commits still require their bounded effect authority. See the source delivery receipt below.
 
-Before promotion, record exact reviewed receiver commit/tree, build/manifest
+For each promotion, record exact reviewed receiver commit/tree, build/manifest
 hashes, Pages project and fixed HTTPS URL, public App ID, deployment effects
 (preview/main), specific authority and prior deployment rollback identity.
 Read actual `/`, `/index.html` redirect/clean URL and manifest responses: status,
@@ -138,15 +138,18 @@ test target The Frame (Ready For Testing). See [the bounded publication
 proposal](qualification/2026-10-09-publication-proposal.md) for current readback,
 remaining boundaries and rollback. These screenshots identify existing resources;
 specific publication/device-effect approval still names the concrete candidate.
+Source candidate fcc686a was approved and delivered through protected PR #11 as
+32e409b; [source delivery/Finalization receipt](qualification/2026-10-10-source-finalization.md)
+records actual Pages verification and remaining acceptance.
 
 ## Acceptance and evidence labels
 
 | Gate | Current evidence / remaining condition |
 | --- | --- |
-| BUILD_ADOPTION | Local pinned Core verifier, archive/manifest/renderer/output equality; adversarial importer tests |
+| BUILD_ADOPTION | PASS: pinned Core verifier/bytes and adversarial tests; protected source-main tree verified |
 | DISTRIBUTION_BROWSER_QUAL | 10 local Chrome viewport/language scenarios PASS with modeled CAF/HA; real distribution/network acceptance pending |
 | REAL_CAF_QUAL | NOT_RUN; hosted SDK/device launch/message/readiness/idle/shutdown pending |
-| PAGES_DEPLOYMENT | Existing production baseline independently read back; candidate promotion NOT_RUN, specific publication approval pending |
+| PAGES_DEPLOYMENT | PASS: source main32e409b deployed; 12 actual production/immutable URL readbacks exact, types/privacy PASS |
 | APPLE_SENDER_QUAL | OPEN; owning registered follow-up, current conversation/history WIP preserved |
 | GOOGLE_CAST_TV_QUAL | NOT_RUN; The Frame/AppID identified, device discovery/launch and compatible authorized HA route pending |
 | native macOS | Separate supported sender-route qualification needed |
