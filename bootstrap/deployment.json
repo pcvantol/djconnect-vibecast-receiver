@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "project": "vibecast-tv-bootstrap",
+  "account_id": "efe77cadf8317a53832fca0848e3ae51",
+  "production_origin": "https://vibecast.tv",
+  "environment": "vibecast-production",
+  "status": "ACCOUNT_VERIFIED_TARGET_NOT_PROVISIONED"
+}

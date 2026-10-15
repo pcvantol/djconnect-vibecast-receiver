@@ -1,6 +1,11 @@
 # DJConnect VibeCast Receiver
 
-Static Google Cast Custom Web Receiver for DJConnect VibeCast.
+Central VibeCast.tv bootstrap and independently pinned Google Cast receiver distribution.
+
+The bootstrap lives in `bootstrap/` and builds to `dist/bootstrap`; Cast remains
+in `wwwroot`. See [bootstrap build, contracts, tests and publication gates](docs/WEB_BOOTSTRAP.md).
+No rendezvous producer is qualified yet: production explicitly shows connecting
+is unavailable, without a QR or simulated pairing.
 
 The receiver contains no user API, analytics, storage, Home Assistant pairing
 credential or proxy. A paired Apple sender provides one runtime-scoped,

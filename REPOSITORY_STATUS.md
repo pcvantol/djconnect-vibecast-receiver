@@ -1,3 +1,25 @@
+# Current bounded work — 2026-10-15
+
+DJC-VIBECAST-TV-BOOTSTRAP-CLOUDFLARE-V1-20261015 / #16. Sole receiverwriter,
+branch codex/vibecast-tv-bootstrap-v1, isolated /private/tmp/vibecast16-work,
+base cf487797e54ead71bbbe7d4a759e2a1a58e51b1b. Core predecessor source1181 plus
+Finalization1183 delivered, definitive design/DAG f32b625eb0a3d1b8abfc2c81378d25d769c6766d.
+Fresh hostverify MATCH. ACK/firstmaterial owning10/6202472495.
+
+Actual source: separate lifecycle/frontend/five languages/Glass-Soft-Solid,
+fail-closed production adapter, deterministic artifact, state/security/browser
+and promotion-negative tests, CI artifact plus protected explicit Direct Upload
+workflow. Cast wwwroot/vendor/source locks remain byte-identical to base.
+See [current runbook/evidence boundaries](docs/WEB_BOOTSTRAP.md).
+
+Source is local, not yet protected delivered. Independent exact reviews, source
+publication gate and remote CI remain pending. Pages target not provisioned;
+zone active but DNS records not readable with current OAuth. No Pages/DNS effects.
+Rendezvous producer and Apple/HA onboarding contracts remain open dependencies.
+PHYSICAL_TV_ACCEPTANCE NOT_RUN. Finalization pending; no complete delivery claim.
+
+---
+
 # Repository status
 
 **Role:** static Cast receiver distribution; Core owns shared renderer/adapters,
