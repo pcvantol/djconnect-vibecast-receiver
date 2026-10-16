@@ -22,7 +22,9 @@ for(const state of ['waiting','confirming'])for(const size of [21,177])test(`QR 
  const deadline=await page.locator('#expiry').textContent();
  for(const viewport of [{width:390,height:844},{width:320,height:720},{width:1920,height:1080}]){
   await page.setViewportSize(viewport);
-  await expect.poll(async()=>page.locator('#qr').evaluate((canvas,size)=>{const rect=canvas.getBoundingClientRect(),panel=document.querySelector('.panel').getBoundingClientRect(),available=document.getElementById('qr-panel').clientWidth-32;return rect.width===canvas.width&&canvas.width%(size+8)===0&&rect.width<=available&&document.documentElement.scrollWidth<=innerWidth&&panel.right<=innerWidth&&panel.left>=0;},size)).toBe(true);
+  const metrics=()=>page.locator('#qr').evaluate((canvas,size)=>{const rect=canvas.getBoundingClientRect(),panel=document.querySelector('.panel').getBoundingClientRect(),available=document.getElementById('qr-panel').clientWidth-32;return {raster:canvas.width,css:rect.width,modules:size+8,available,root:document.documentElement.scrollWidth,viewport:innerWidth,panelLeft:panel.left,panelRight:panel.right};},size);
+  try {await expect.poll(async()=>{const m=await metrics();return m.css===m.raster&&m.raster%m.modules===0&&m.css<=m.available&&m.root<=m.viewport&&m.panelRight<=m.viewport&&m.panelLeft>=0;}).toBe(true);}
+  catch(error){console.log('QR_LAYOUT_DIAGNOSTIC',JSON.stringify({state,size,requested:viewport,metrics:await metrics()}));throw error;}
   await expect(page.locator('#expiry')).toHaveText(deadline);
  }
  await page.evaluate(()=>window.testOnlyQRStop());
