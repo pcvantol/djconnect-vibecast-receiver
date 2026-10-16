@@ -1,5 +1,5 @@
 import {readFile,writeFile} from 'node:fs/promises';
-import {inspect,target,safeReadFailure} from './cloudflare_readiness.mjs';
+import {inspectStable as inspect,target,safeReadFailure} from './cloudflare_readiness.mjs';
 import {api,guard} from './promotion_guard.mjs';
 
 const projectRoute=`/accounts/${target.account}/pages/projects/${target.project}`;

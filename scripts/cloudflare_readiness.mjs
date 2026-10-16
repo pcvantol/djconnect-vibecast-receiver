@@ -50,6 +50,21 @@ export function guardInitialPublication(receipt) {
  if(receipt.domain!==target.domain||receipt.project?.id!==target.projectID||receipt.read_access!=='PASS'||receipt.project.domains.includes(target.domain)||receipt.records.some(r=>r.name===target.domain&&['A','AAAA','CNAME'].includes(r.type)))throw Error('Existing root needs a separately reviewed artifact promotion and rollback route');
 }
 
+// A confirmed write can precede Cloudflare's inventory total_count update.
+// Retry the entire strict inventory; never accept inconsistent counts or IDs.
+export async function inspectStable(options) {
+ const deadline=AbortSignal.timeout(30000),request=options.request??fetch;
+ const bounded={...options,request:(url,init)=>request(url,{...init,signal:AbortSignal.any([init.signal,deadline])})};
+ for(let attempt=1;attempt<=20&&!deadline.aborted;attempt++) {
+  try{return await inspect(bounded);}
+  catch(error) {
+   if(!['Incomplete DNS inventory','DNS inventory changed during read'].includes(error.message)||attempt===20||deadline.aborted)throw error;
+  }
+  await(options.pause??(ms=>new Promise(resolve=>setTimeout(resolve,ms))))(500);
+ }
+ throw Error('Incomplete DNS inventory');
+}
+
 export function safeReadFailure(error) {
  const known=new Set(['Missing credential or incorrect fixed account','Cloudflare read request failed','Cloudflare read access denied','Unexpected Pages target or integration','Incomplete DNS inventory','DNS inventory changed during read','Unexpected DNS record identity','Repeated DNS record identity','Incomplete DNS target']);
  return {outcome:'FAIL',reason:known.has(error?.message)?error.message:'Unclassified local failure'};

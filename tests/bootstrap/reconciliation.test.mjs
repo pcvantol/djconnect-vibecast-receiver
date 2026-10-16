@@ -10,3 +10,13 @@ test('recovery accepts only exact measured failed-run receipt and trusted proven
  const changed=JSON.parse(raw);changed.createdRecordID='foreign';assert.throws(()=>guardRecovery(run,JSON.stringify(changed)));
  assert.throws(()=>guardRecovery(run,Buffer.concat([raw,Buffer.from('\n')])));
 });
+
+test('second measured failed mutation has a separate immutable pin; arbitrary selectors fail',async()=>{
+ const {recoveries}=await import('../../scripts/reconcile_initial_binding.mjs');
+ const pin=recoveries['restore-run38934680867'];
+ const raw=await readFile(new URL('./fixtures/failed-domain-38934680867.json',import.meta.url));
+ const original={...run,id:Number(pin.runID),head_sha:pin.sourceSHA};
+ assert.equal(guardRecovery(original,raw,pin).createdRecordID,pin.recordID);
+ assert.throws(()=>guardRecovery(original,raw));
+ assert.throws(()=>guardRecovery(original,raw,{...pin}));
+});

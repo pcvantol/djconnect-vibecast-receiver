@@ -5,8 +5,8 @@ import {target} from '../../scripts/cloudflare_readiness.mjs';
 
 const identity={sourceSHA:'a'.repeat(40),runID:'12345'};
 const cname={id:'b'.repeat(32),name:target.domain,type:'CNAME',content:target.project+'.pages.dev',ttl:1,proxied:true};
-function fixture({existing=false,conflict=false,automatic=false,uncertain=false,visibilityDelay=0}={}) {
- let missingReads=visibilityDelay;
+function fixture({existing=false,conflict=false,automatic=false,uncertain=false,visibilityDelay=0,countDelay=0}={}) {
+ let missingReads=visibilityDelay,laggingCounts=0;
  const state={domain:existing?{id:'domain-id',name:target.domain}:null,records:existing?[{...cname}]:conflict?[{...cname,type:'A',content:'192.0.2.1'}]:[],calls:[]};
  const options={pause:async()=>{},account:target.account,pagesToken:'synthetic-pages',dnsToken:'synthetic-dns',request:async(url,opts)=>{
   const path=new URL(url).pathname,method=opts.method,body=opts.body?JSON.parse(opts.body):null;
@@ -22,13 +22,14 @@ function fixture({existing=false,conflict=false,automatic=false,uncertain=false,
    return reply(state.domain,state.domain?200:404);
   }
   if(path.endsWith('/dns_records')) {
-   if(method==='POST'){state.records.push({id:cname.id,...body});return reply(state.records.at(-1));}
+   if(method==='POST'){state.records.push({id:cname.id,...body});laggingCounts=countDelay;return reply(state.records.at(-1));}
    if(state.records.length&&missingReads-->0)return reply([]);
+   if(laggingCounts-->0){const response=reply(state.records),body=await response.json();body.result_info.total_count=state.records.length?0:1;return {...response,json:async()=>body};}
    return reply(state.records);
   }
   if(path.endsWith('/dns_records/'+cname.id)) {
    const record=state.records.find(r=>r.id===cname.id);
-   if(method==='DELETE'){state.records=state.records.filter(r=>r.id!==cname.id);return reply(null);}
+   if(method==='DELETE'){state.records=state.records.filter(r=>r.id!==cname.id);laggingCounts=countDelay;return reply(null);}
    return reply(record,record?200:404);
   }
   throw Error('Unexpected test request');
@@ -76,4 +77,11 @@ test('rollback refuses an unowned association before any DNS deletion',async()=>
  state.domain={id:'foreign-domain',name:target.domain};state.calls=[];
  await assert.rejects(rollbackDomain(options,receipt,identity));
  assert.equal(state.calls.filter(call=>call.method==='DELETE').length,0);
+});
+
+test('post-write count lag requires a later complete inventory for bind and rollback',async()=>{
+ const {state,options}=fixture({countDelay:2});const receipt=await bindDomain(options,identity);
+ assert.equal(receipt.complete,true);
+ assert.equal((await rollbackDomain(options,receipt,identity)).rollback,'PASS');
+ assert.equal(state.calls.filter(c=>c.method==='POST'&&c.path.endsWith('/dns_records')).length,1);
 });
