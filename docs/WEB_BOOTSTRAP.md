@@ -101,6 +101,18 @@ through an owner-authorized DNS-read route before any binding. No account/zone/
 DNS/project changes have been made. GitHub secret-name and environment inventories
 were empty; local OAuth access is not a minimally scoped CI credential.
 
+## Owner-approved environment review mode, 2026-10-16
+
+Peter explicitly stated in the owning Workchat: “Ik geef expliciete toestemming
+voor owner-selfreview.” Only vibecast-production may permit the required owner
+reviewer to approve their own deployment run (prevent_self_review=false).
+The promotion guard pins the sole reviewer to pcvantol/user19624891; it also
+accepts the stricter true setting. A required approval still blocks the job
+until the owner approves it. Independent source reviews, green trusted main CI,
+exact artifact/target checks, protected branches and can_admins_bypass=false
+remain mandatory. This does not supply the missing scoped Pages credential or
+DNS access, qualify deployment.json, or authorize any broader bypass.
+
 ## Controlled publication runbook and actual blockers
 
 Proposed isolated Direct Upload target: **vibecast-tv-bootstrap**, fixed output
@@ -117,7 +129,7 @@ procedures; existing Cast target is not part of provisioning.
    specific root is unused. Qualified provision: new free Pages Direct Upload
    target in the pinned account, no Worker/functions/service, no paid plan.
    Domain binding/DNS has its own concrete effect gate; never account-wide DNS.
-3. Configure **vibecast-production** with required reviewers, prevent self-review,
+3. Configure **vibecast-production** with the sole required owner reviewer pcvantol (user19624891), owner self-review allowed,
    no admin bypass and protected-main branch policy. Add Pages Edit credential
    restricted to this account with minimal supported scope as environment secret
    CLOUDFLARE_API_TOKEN; set CLOUDFLARE_ACCOUNT_ID variable. Do not reuse local broad
