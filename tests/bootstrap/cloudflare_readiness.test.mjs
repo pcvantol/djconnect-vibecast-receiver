@@ -27,3 +27,16 @@ test('wrong target, incomplete inventory, foreign records and denied access fail
 });
 
 test('empty zones are complete only with explicit zero count',async()=>{const {options}=setup();const previous=options.request;options.request=async(url,opts)=>url.includes('/pages/projects/')?previous(url,opts):({ok:true,json:async()=>({success:true,result:[],result_info:{page:1,total_pages:0,total_count:0}})});assert.deepEqual((await inspect(options)).records,[]);});
+
+test('pagination rejects duplicate identities, count drift and page-count drift',async()=>{
+ for(const fault of ['none','duplicate','count','pages']) {
+  const {options}=setup();const previous=options.request;
+  options.request=async(url,opts)=>{
+   if(url.includes('/pages/projects/'))return previous(url,opts);
+   const page=Number(new URL(url).searchParams.get('page'));
+   return {ok:true,json:async()=>({success:true,result:[{...record,id:fault==='duplicate'?'same':'record'+page}],result_info:{page,total_pages:page===2&&fault==='pages'?3:2,total_count:page===2&&fault==='count'?3:2}})};
+  };
+  if(fault==='none')assert.equal((await inspect(options)).records.length,2);
+  else await assert.rejects(inspect(options));
+ }
+});
