@@ -1,34 +1,35 @@
 # Current bounded work — 2026-10-16
 
 DJC-VIBECAST-TV-BOOTSTRAP-CLOUDFLARE-V1-20261015 / [#16](https://github.com/pcvantol/djconnect-vibecast-receiver/issues/16).
-One receiverwriter in /private/tmp/vibecast16-work; controlled publication
-branch codex/vibecast-controlled-pages-publication, based on protectedPR20
-main d0107eacb02b33f170dd24c7a13b740808102058.
+One receiverwriter in /private/tmp/vibecast16-work; Finalization branch
+codex/vibecast-public-web-finalization, based on protected main
+8953171899c47ab54585a626d4041d822822c81e.
 Core predecessor source1181 plus Finalization1183 delivered; definitive design/DAG
 f32b625eb0a3d1b8abfc2c81378d25d769c6766d. No Core/API/Apple source writes.
 
-Source PR17 and owner-selfreview delta PR18 are protected delivered. Exact
-candidate/main trees, independent technical/privacy and product/UX reviews,
-required PR/main CI and downloaded main artifact hashes qualified. Existing
-Cast output is unchanged; measured receiver HTTPS bytes/privacy PASS.
-See [delivery checkpoint and acceptance matrix](docs/qualification/2026-10-16-bootstrap-delivery-checkpoint.md).
+PUBLIC_WEB_DELIVERY is actually qualified: protected source/reviews/mainCI,
+verified reproducible artifact, controlled Pages run38935679845 SUCCESS,
+immutable https://6c5dc927.vibecast-tv-bootstrap.pages.dev and
+https://vibecast.tv HTTPS/all bytes/hashes/types/headers/redirects/404 PASS.
+Separate Direct Upload target; existing Cast output/origin/AppID preserved and
+live bytes/privacy reverified. Actual initial-binding recovery also PASS;
+subsequent live-artifact promotion remains separately gated.
 
-Separate Direct Upload Pages target exists, but no bootstrap artifact has been
-published. Owner-selfreview was explicitly authorized, applied and read back;
-required owner approval, protected branches and no admin bypass remain enforced.
-Peter has now saved both environment secrets; GitHub name readback confirms
-CLOUDFLARE_API_TOKEN and CLOUDFLARE_DNS_API_TOKEN. Actual protected read-only run38927449565 SUCCESS confirms
-fixed Pages identity and a complete empty DNS inventory. deployment.json pins
-this qualified read route; write capability/publication/TLS remain unmeasured.
-See [staged first publication and rollback](docs/qualification/2026-10-16-bootstrap-publication-route.md).
-No local route bypasses the controlled workflow.
+Live Chromium/WebKit, twenty viewport/language cases PASS_WITH_WARNINGS:
+precisely scoped WebKit native-select CSP diagnostic, also reproduced with app
+JavaScript disabled. CSP retained; no other errors accepted. Production honestly
+shows connecting unavailable, no QR/service request. Modeled lifecycle/adapter
+fixtures are not a real rendezvous contract or onboarding acceptance.
 
-SOURCE_DELIVERED=YES; CI_QUALIFIED=PASS (source/build/browser/artifact);
-PAGES_DEPLOYED=NOT_RUN_PUBLICATION_GATE; DOMAIN_TLS_VERIFIED=NOT_VERIFIED;
-RENDEZVOUS_CONNECTED=BLOCKED_BY_NAMED_CONTRACT; APPLE_HA_ONBOARDING_E2E=OPEN;
-PHYSICAL_TV_ACCEPTANCE=NOT_RUN. Own issue16 Finalization and Core1101 terminal
-handoff remain pending. This checkpoint is not full PUBLIC_WEB_DELIVERY closure.
-No next receiver implementation assignment is issued in the current queue.
+[Public-web Finalization and exact evidence](docs/qualification/2026-10-16-bootstrap-public-web-finalization.md)
+supersedes the earlier source-only checkpoint. At preparation its documentation
+review/protected merge/final-main checks remain pending; actual reconciliation
+and Core1101 handoff are recorded only afterward in owning issue10.
+SOURCE_DELIVERED=YES; CI_QUALIFIED=PASS; PAGES_DEPLOYED=PASS;
+DOMAIN_TLS_VERIFIED=PASS; RENDEZVOUS_CONNECTED=BLOCKED_BY_NAMED_CONTRACT;
+APPLE_HA_ONBOARDING_E2E=OPEN; PHYSICAL_TV_ACCEPTANCE=NOT_RUN.
+Issue16 remains open for its named integration dependency. No new assignment or
+producer writer is started. Timer remains PAUSED at Peter's request.
 
 ---
 
