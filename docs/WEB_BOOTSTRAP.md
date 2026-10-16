@@ -87,8 +87,8 @@ Source PR17 and owner-selfreview delta PR18 are protected delivered. MainCI38865
 and exact downloaded artifact verification PASS on2e6b8f9f29449d5d07931a0bd4c744518b196b33.
 The separate Direct Upload target now exists. Owner-selfreview is applied and read
 back; required owner approval, no admin bypass and protected branches remain.
-No bootstrap deployment yet: scoped Pages environment secret and separate DNS
-access are still missing. deployment.json remains unqualified. See the
+No bootstrap deployment is claimed by this historical checkpoint. See the newer
+qualified-access and staged-publication section below. See the
 [measured acceptance matrix and next execution steps](qualification/2026-10-16-bootstrap-delivery-checkpoint.md).
 
 The preflight and initial freeze statements below are historical measurements;
@@ -113,6 +113,21 @@ UNVERIFIED. Do not guess they are empty or overwrite them. Read DNS configuratio
 through an owner-authorized DNS-read route before any binding. No account/zone/
 DNS/project changes have been made. GitHub secret-name and environment inventories
 were empty; local OAuth access is not a minimally scoped CI credential.
+
+## Qualified access and staged first publication
+
+Both scoped secrets were used successfully by protected read-only run38927449565
+on d0107eacb02b33f170dd24c7a13b740808102058. Actual complete vibecast.tv DNS inventory
+is empty. Fixed Pages target/main/Direct Upload identity matches. Read access is
+qualified; edit rights remain NOT_TESTED until the real controlled effect.
+
+The [first-publication route](qualification/2026-10-16-bootstrap-publication-route.md)
+now implements immutable upload/readback, then bounded root association/DNS,
+then full TLS/root readback in the same protected job, with same-run binding
+rollback on failure. It explicitly refuses an existing live root before upload.
+This reviewed staged route supersedes the earlier DNS-before-dispatch ordering;
+no check is skipped and no local upload path is introduced. Actual public PASS
+still requires the measured workflow receipts.
 
 ## Scoped credential and DNS read preflight
 
@@ -170,9 +185,10 @@ procedures; existing Cast target is not part of provisioning.
    restricted to this account with minimal supported scope as environment secret
    CLOUDFLARE_API_TOKEN; set CLOUDFLARE_ACCOUNT_ID variable. Do not reuse local broad
    OAuth, APNs or DNS credentials for CI; no secrets in chat/files/artifacts.
-   Verify actual protection/token/target readback, then update deployment.json
-   to QUALIFIED through a reviewed source change; current configuration blocks
-   deployment. Exact DNS permission need is separate from this Pages credential.
+   Actual protected run38927449565 qualified both read routes and empty DNS.
+   deployment.json now pins that read qualification, with INITIAL_BINDING_ONLY
+   mode. Write capability still needs its actual effect/readback. Exact DNS
+   permission remains separate from the Pages credential.
 4. After protected main CI success and exact effect approval, dispatch
    Publish VibeCast bootstrap from main with that main candidate_sha and its
    successful Verify receiver push-run artifact_run_id. Guard checks checkout
@@ -190,18 +206,21 @@ procedures; existing Cast target is not part of provisioning.
    Save sanitized deployment identity, previous deployment/binding, approvals,
    artifact digest and HTTPS receipts. Workflow failures remain failures, never
    an inferred live PASS. Validate clean index redirect behavior on live host.
-6. First publication rollback baseline is **no bootstrap project/domain binding**,
-   pending DNS inventory, not the existing Cast deployment. Preserve prior DNS
-   values before effects. If rollout fails, stop promotion; remove only newly
-   approved binding/restore exact prior target via authorized owner route.
-   Retain deployment evidence. Later rollback re-promotes an exact previously
-   tested bootstrap artifact through the same review/effect route (dedicated
-   rollback candidate; normal stale-main guard intentionally blocks arbitrary
-   old-run promotion). Never overwrite the Cast project or use force push.
+6. First-publication rollback baseline is **no root binding** and a pre-created
+   isolated Pages project, as measured by the complete empty DNS inventory.
+   On failure after binding, restore only this run's newly created matching
+   root record/association through its source/run-bound receipt. Unconfirmed
+   responses require reconciliation; no unknown resource is deleted. Retain
+   uploaded Pages artifacts and sanitized evidence for diagnosis. There was no
+   previous live bootstrap artifact to restore; Cast remains untouched.
+   Later live-artifact promotion/rollback needs a separately reviewed route;
+   current INITIAL_BINDING_ONLY mode rejects an already associated/addressed
+   root before upload. No force push or account-wide DNS change.
 
-Current blockers: scoped Pages CI credential and target qualification; separate
-DNS record read/edit route and prior-binding inventory; producer rendezvous/TRUST
-contract plus Core/Apple onboarding. Source reviews, protected merges, target
+
+Current open gates: actual controlled Pages/domain/TLS publication and its
+write/readback receipts; producer rendezvous/TRUST contract plus Core/Apple
+onboarding. Scoped read access and initial DNS inventory are now qualified. Source reviews, protected merges, target
 creation and owner-selfreview authorization/configuration have been completed.
 Existing OAuth now resolves account/Pages-read access, so do not request it again.
 The source/pipeline is protected delivered with remote CI and exact artifact

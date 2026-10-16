@@ -7,7 +7,7 @@ export function guardSource({repository,branch,sha,checkoutSHA,currentMain,run,e
 export function guard(input) {
  guardSource(input);
  const {config,account}=input;
- if(config.project!=='vibecast-tv-bootstrap'||config.production_origin!=='https://vibecast.tv'||config.status!=='QUALIFIED'||!config.account_id||config.account_id!==account)throw Error('Unqualified deployment target');
+ if(config.publication_mode!=='INITIAL_BINDING_ONLY'||config.project!=='vibecast-tv-bootstrap'||config.production_origin!=='https://vibecast.tv'||config.status!=='QUALIFIED'||!config.account_id||config.account_id!==account)throw Error('Unqualified deployment target');
 }
 export function api(route){return JSON.parse(execFileSync('gh',['api',route],{encoding:'utf8'}));}
 if(process.argv[1]===new URL(import.meta.url).pathname){

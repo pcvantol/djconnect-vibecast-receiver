@@ -43,11 +43,16 @@ export async function inspect({pagesToken,dnsToken,account,request=fetch}) {
  return {schema:1,account:target.account,project:{id:project.id,name:project.name,production_branch:project.production_branch,source:project.source??null,subdomain:project.subdomain,domains:project.domains??[]},zone:target.zone,domain:target.domain,records,read_access:'PASS',write_access:'NOT_TESTED',publication:'NOT_RUN'};
 }
 
+export function guardInitialPublication(receipt) {
+ if(receipt.domain!==target.domain||receipt.project?.id!==target.projectID||receipt.read_access!=='PASS'||receipt.project.domains.includes(target.domain)||receipt.records.some(r=>r.name===target.domain&&['A','AAAA','CNAME'].includes(r.type)))throw Error('Existing root needs a separately reviewed artifact promotion and rollback route');
+}
+
 if(process.argv[1]===new URL(import.meta.url).pathname) {
  try {
   const repository=process.env.GITHUB_REPOSITORY,sha=process.env.CANDIDATE_SHA;
   guardSource({repository,branch:process.env.GITHUB_REF,sha,checkoutSHA:process.env.GITHUB_SHA,currentMain:api(`repos/${repository}/commits/main`).sha,run:api(`repos/${repository}/actions/runs/${process.env.ARTIFACT_RUN_ID}`),environment:api(`repos/${repository}/environments/vibecast-production`)});
   const receipt=await inspect({pagesToken:process.env.CLOUDFLARE_API_TOKEN,dnsToken:process.env.CLOUDFLARE_DNS_API_TOKEN,account:process.env.CLOUDFLARE_ACCOUNT_ID});
+  if(process.argv[2]==='initial-publication')guardInitialPublication(receipt);
   await writeFile('cloudflare-readiness.json',JSON.stringify({...receipt,sourceSHA:sha},null,2)+'\n');
   process.stdout.write('Fixed Pages target and complete DNS read access PASS; no external writes\n');
  } catch {process.stderr.write('Readiness failed; no credential or provider response is logged\n');process.exitCode=1;}
