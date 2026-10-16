@@ -5,9 +5,10 @@ import {target} from '../../scripts/cloudflare_readiness.mjs';
 
 const identity={sourceSHA:'a'.repeat(40),runID:'12345'};
 const cname={id:'b'.repeat(32),name:target.domain,type:'CNAME',content:target.project+'.pages.dev',ttl:1,proxied:true};
-function fixture({existing=false,conflict=false,automatic=false,uncertain=false}={}) {
+function fixture({existing=false,conflict=false,automatic=false,uncertain=false,visibilityDelay=0}={}) {
+ let missingReads=visibilityDelay;
  const state={domain:existing?{id:'domain-id',name:target.domain}:null,records:existing?[{...cname}]:conflict?[{...cname,type:'A',content:'192.0.2.1'}]:[],calls:[]};
- const options={account:target.account,pagesToken:'synthetic-pages',dnsToken:'synthetic-dns',request:async(url,opts)=>{
+ const options={pause:async()=>{},account:target.account,pagesToken:'synthetic-pages',dnsToken:'synthetic-dns',request:async(url,opts)=>{
   const path=new URL(url).pathname,method=opts.method,body=opts.body?JSON.parse(opts.body):null;
   state.calls.push({path,method,body,token:opts.headers.Authorization});
   const reply=(result,status=200)=>({ok:status===200,status,json:async()=>({success:status===200,result,...(Array.isArray(result)?{result_info:{page:1,total_pages:1,total_count:result.length}}:{})})});
@@ -22,6 +23,7 @@ function fixture({existing=false,conflict=false,automatic=false,uncertain=false}
   }
   if(path.endsWith('/dns_records')) {
    if(method==='POST'){state.records.push({id:cname.id,...body});return reply(state.records.at(-1));}
+   if(state.records.length&&missingReads-->0)return reply([]);
    return reply(state.records);
   }
   if(path.endsWith('/dns_records/'+cname.id)) {
@@ -60,4 +62,11 @@ test('existing website, changed owned record and foreign rollback receipt cannot
 test('uncertain provider mutation leaves audit marker and requires reconciliation',async()=>{
  const {state,options}=fixture({uncertain:true});let saved;
  await assert.rejects(bindDomain(options,{...identity,save:async r=>{saved=structuredClone(r);}}));assert.equal(saved.pendingMutation,'domain-create');await assert.rejects(rollbackDomain(options,saved,identity));assert.equal(state.calls.filter(c=>c.method==='DELETE').length,0);
+});
+
+test('confirmed own record can propagate through empty lists; other identities still fail immediately',async()=>{
+ const delayed=fixture({visibilityDelay:2});let receipt;
+ const done=await bindDomain(delayed.options,{...identity,save:async r=>{receipt=structuredClone(r);}});
+ assert.equal(done.complete,true);assert.equal(receipt.createdRecordID,cname.id);assert.equal(receipt.stage,'complete');
+ const absent=fixture({visibilityDelay:100});await assert.rejects(bindDomain(absent.options,identity),/did not become visible/);
 });
