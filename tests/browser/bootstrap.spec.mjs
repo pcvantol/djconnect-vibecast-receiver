@@ -1,0 +1,31 @@
+import {test,expect} from '@playwright/test';
+for(const locale of ['en','nl','de','fr','es'])for(const viewport of [{width:1920,height:1080},{width:390,height:844}])test(`${locale} ${viewport.width}: real production unavailable UI, focus, no QR or external data`,async({page})=>{
+ await page.setViewportSize(viewport);const external=[];page.on('request',r=>{if(!r.url().startsWith('http://127.0.0.1:4186'))external.push(r.url());});
+ await page.goto('/?url=https://evil.example/');await page.locator('#language').selectOption(locale);
+ await expect(page.locator('html')).toHaveAttribute('lang',locale);await expect(page.locator('html')).toHaveAttribute('data-state','unavailable');
+ await expect(page.locator('#qr-panel')).toBeHidden();await expect(page.locator('#state-title')).not.toHaveText('');
+ await page.locator('#effects').click();await expect(page.locator('html')).toHaveAttribute('data-effects','solid');
+ await expect(page.locator('#effects')).toHaveAttribute('aria-pressed','true');await page.keyboard.press('Tab');await expect(page.locator('#retry')).toBeFocused();await page.keyboard.press('Enter');await expect(page.locator('html')).toHaveAttribute('data-state','unavailable');
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();expect(await page.evaluate(()=>[localStorage.length,sessionStorage.length])).toEqual([0,0]);expect(external).toEqual([]);expect(page.url()).toBe('http://127.0.0.1:4186/');
+});
+test('security headers and reduced effects',async({page})=>{await page.emulateMedia({reducedMotion:'reduce',contrast:'more'});const r=await page.goto('/');expect(r.headers()['referrer-policy']).toBe('no-referrer');expect(r.headers()['content-security-policy']).toContain("connect-src 'none'");await expect(page.locator('html')).toHaveAttribute('data-effects','solid');expect(await page.locator('#status').getAttribute('role')).toBe('status');});
+test('test-only adapter exercises actual browser lifecycle through pending/confirm/expiry',async({page})=>{await page.goto('/');const result=await page.evaluate(async()=>{const {BootstrapController}=await import('/lifecycle.mjs');const states=[];let resolveWait;const adapter={contract:'TEST_ONLY',create:async()=>({expiresAt:Date.now()+100,matrix:Array.from({length:21},()=>Array(21).fill(false))}),validateChallenge:()=>true,allowsDestination:()=>true,verifyDestination:async()=> 'https://ha.example/display',wait:({onConfirming})=>{onConfirming();return new Promise(r=>resolveWait=r);}};let navigations=0;const c=new BootstrapController({adapter,render:s=>states.push(s.state),navigate:()=>navigations++});const work=c.start();await new Promise(r=>setTimeout(r,180));resolveWait({});await work;return{states,navigations};});expect(result.states).toEqual(['creating','waiting','confirming','expired']);expect(result.navigations).toBe(0);});
+test('every genuine UI state is localized and withdraws old QR pixels',async({page})=>{
+ await page.goto('/');
+ const results=await page.evaluate(async()=>{const{renderState}=await import('/view.mjs');const states=['initializing','creating','waiting','confirming','received','redirecting','expired','recovering','unknown','unsafe','unsupported','unavailable'];const result=[];
+ for(const language of ['en','nl','de','fr','es'])for(const state of states){renderState(document,language,{state,challenge:{expiresAt:Date.now()+1000,matrix:Array.from({length:21},()=>Array(21).fill(true))}});const c=document.getElementById('qr');result.push({state,visible:!document.getElementById('qr-panel').hidden,title:document.getElementById('state-title').textContent,pixels:c.width,quiet:state==='waiting'?Array.from(c.getContext('2d').getImageData(0,0,1,1).data):null});}return result;});
+ for(const result of results){expect(result.title.length).toBeGreaterThan(5);expect(result.visible).toBe(['waiting','confirming'].includes(result.state));if(!result.visible)expect(result.pixels).toBe(0);if(result.quiet)expect(result.quiet).toEqual([255,255,255,255]);}
+});
+for(const state of ['waiting','confirming'])for(const size of [21,177])test(`QR ${state}/${size} stays sharp and within the viewport after orientation changes`,async({page})=>{
+ await page.setViewportSize({width:1920,height:1080});await page.goto('/');
+ await page.evaluate(async({state,size})=>{const{renderState,observeQRLayout}=await import('/view.mjs');const projection={state,challenge:{expiresAt:Date.now()+60000,matrix:Array.from({length:size},()=>Array(size).fill(true))}};const redraw=()=>renderState(document,'en',projection);redraw();window.testOnlyQRStop=observeQRLayout(document,redraw);},{state,size});
+ const deadline=await page.locator('#expiry').textContent();
+ for(const viewport of [{width:390,height:844},{width:320,height:720},{width:1920,height:1080}]){
+  await page.setViewportSize(viewport);
+  const metrics=()=>page.locator('#qr').evaluate((canvas,size)=>{const rect=canvas.getBoundingClientRect(),panel=document.querySelector('.panel').getBoundingClientRect(),available=document.getElementById('qr-panel').clientWidth-32;return {raster:canvas.width,css:rect.width,modules:size+8,available,root:document.documentElement.scrollWidth,viewport:innerWidth,clientWidth:document.documentElement.clientWidth,scrollbar:innerWidth-document.documentElement.clientWidth,preferencesRight:document.querySelector('.preferences').getBoundingClientRect().right,panelLeft:panel.left,panelRight:panel.right};},size);
+  try {await expect.poll(async()=>{const m=await metrics();return m.css===m.raster&&m.raster%m.modules===0&&m.css<=m.available&&m.root<=m.viewport&&m.panelRight<=m.viewport&&m.panelLeft>=0;}).toBe(true);}
+  catch(error){console.log('QR_LAYOUT_DIAGNOSTIC',JSON.stringify({state,size,requested:viewport,metrics:await metrics()}));throw error;}
+  await expect(page.locator('#expiry')).toHaveText(deadline);
+ }
+ await page.evaluate(()=>window.testOnlyQRStop());
+});

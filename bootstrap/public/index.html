@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en" data-effects="solid">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="referrer" content="no-referrer"><meta name="color-scheme" content="dark">
+<title>VibeCast by DJConnect</title><link rel="icon" href="data:,">
+<link rel="stylesheet" href="/style.css"><script type="module" src="/app.mjs"></script>
+</head>
+<body>
+<header><a href="/" class="brand" aria-label="VibeCast by DJConnect"><span class="brand-mark" aria-hidden="true">◒</span><span>VibeCast <small>by DJConnect</small></span></a>
+<div class="preferences"><label for="language" id="language-label">Language</label><select id="language"><option value="en">English</option><option value="nl">Nederlands</option><option value="de">Deutsch</option><option value="fr">Français</option><option value="es">Español</option></select><button id="effects" type="button" aria-pressed="false">Fewer effects</button></div></header>
+<main><section class="intro"><p id="eyebrow" class="eyebrow">YOUR MUSIC. A SHARED MOMENT.</p><h1 id="headline">Give your music<br>room to shine.</h1><p id="intro">Bring VibeCast to this screen. Your own Home Assistant stays in control.</p><div id="steps" class="steps" aria-label="Connection steps"><p><b>01</b> <span id="step1">Find your Home Assistant</span></p><p><b>02</b> <span id="step2">Approve this screen separately</span></p></div></section>
+<section class="panel" aria-labelledby="state-title"><div class="status-icon" aria-hidden="true">◉</div><p id="state-label" class="eyebrow">CONNECT YOUR SCREEN</p><div id="status" role="status" aria-live="polite" aria-atomic="true"><h2 id="state-title">A secure browser is required</h2><p id="state-description">Use a current browser with JavaScript and a secure HTTPS connection.</p></div><div id="qr-panel" hidden><canvas id="qr" role="img"></canvas><p id="expiry"></p></div><button id="retry" type="button" hidden>Try again</button><p id="privacy" class="privacy">No account details or session content are stored here.</p></section></main>
+<footer><span id="footer">Music stays with you.</span><span>VibeCast · DJConnect</span></footer>
+<noscript><p class="noscript">JavaScript is required to connect safely. / JavaScript is nodig om veilig te verbinden.</p></noscript>
+</body></html>
