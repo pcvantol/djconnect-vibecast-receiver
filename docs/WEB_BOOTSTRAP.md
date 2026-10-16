@@ -122,7 +122,7 @@ is empty. Fixed Pages target/main/Direct Upload identity matches. Read access is
 qualified; edit rights remain NOT_TESTED until the real controlled effect.
 
 The [first-publication route](qualification/2026-10-16-bootstrap-publication-route.md)
-now implements immutable upload/readback, then bounded root association/DNS,
+now implements immutable upload/readback, then explicit owned root DNS creation and Pages association,
 then full TLS/root readback in the same protected job, with same-run binding
 rollback on failure. It explicitly refuses an existing live root before upload.
 This reviewed staged route supersedes the earlier DNS-before-dispatch ordering;

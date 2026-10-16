@@ -32,9 +32,13 @@ Subsequent live-artifact promotion needs a separately reviewed rollback route.
 2. Upload only the tested artifact through pinned Wrangler. Verify all immutable
    HTTPS bytes, hashes, contenttypes, complete artifact-bound headers and404.
 3. Only after immutable qualification, recheck main/CI/environment/target, then
-   associate exactly vibecast.tv with the fixed Pages project and create the
-   exact proxied root CNAME to vibecast-tv-bootstrap.pages.dev if Pages did not
-   create it automatically. No update/PUT/patch of an existing destination.
+   create the exact proxied root CNAME to vibecast-tv-bootstrap.pages.dev and
+   retain its confirmed creation ID, then associate exactly vibecast.tv with
+   the fixed Pages project. Recheck that exact DNS ID before and after association.
+   No update/PUT/patch or guessed ownership of an observed record.
+   DNS-first ordering deliberately obtains an attributable creation receipt;
+   this initially unused domain can return a provisioning error until the Pages
+   association completes. Such a transient state is never publication PASS.
 4. Wait at most five minutes for full root HTTPS artifact/readback qualification
    with normal TLS. Repeat the complete hash/header/404 check while provisioning
    propagates; a timeout/final failure remains a failed workflow. Cast again must

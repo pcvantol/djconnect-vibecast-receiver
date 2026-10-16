@@ -31,26 +31,29 @@ export async function bindDomain(options,{sourceSHA,runID,save=async()=>{}}) {
  if(!domain&&prior.length)throw Error('Unassociated existing DNS is not owned by this run');
  const receipt={schema:1,sourceSHA,runID,account:target.account,project:target.project,zone:target.zone,domain:target.domain,initialAddresses:prior,initialDomainID:domain?.id??null,createdDomainID:null,createdRecordID:null,pendingMutation:null,complete:false};
  await save(receipt);
+ // Create and retain the exact DNS mutation receipt before association. Pages
+ // must not cause an observed record to be guessed as this run's property.
+ if(!prior.length) {
+  const before=addresses((await inspect(options)).records);
+  if(before.length)throw Error('Root appeared before DNS creation; ownership is unknown');
+  receipt.pendingMutation='dns-create';await save(receipt);
+  const created=await call(dnsRoute,'POST',{type:'CNAME',name:target.domain,content:target.project+'.pages.dev',ttl:1,proxied:true},true);
+  if(!expected(created)||!identifier(created.id))throw Error('Unexpected created DNS record');
+  receipt.createdRecordID=created.id;receipt.pendingMutation=null;await save(receipt);
+ }
+ const assertCurrent=async()=>{
+  const current=addresses((await inspect(options)).records);
+  const ownedID=receipt.createdRecordID??prior[0]?.id;
+  if(current.length!==1||!expected(current[0])||current[0].id!==ownedID)throw Error('Root identity changed; do not associate or delete');
+ };
+ await assertCurrent();
  if(!domain) {
   receipt.pendingMutation='domain-create';await save(receipt);
   const created=await call(projectRoute+'/domains','POST',{name:target.domain});
   if(created?.name!==target.domain||!identifier(created.id))throw Error('Unexpected created domain identity');
   receipt.createdDomainID=created.id;receipt.pendingMutation=null;await save(receipt);
  }
- let current=addresses((await inspect(options)).records);
- if(current.length>1||current.some(r=>!expected(r)))throw Error('Root changed during domain association');
- if(!current.length) {
-  receipt.pendingMutation='dns-create';await save(receipt);
-  const created=await call(dnsRoute,'POST',{type:'CNAME',name:target.domain,content:target.project+'.pages.dev',ttl:1,proxied:true},true);
-  if(!expected(created)||!identifier(created.id))throw Error('Unexpected created DNS record');
-  receipt.createdRecordID=created.id;receipt.pendingMutation=null;await save(receipt);
- } else if(!prior.length&&receipt.createdDomainID) {
-  // Pages may create this exact CNAME as part of the confirmed association.
-  if(!identifier(current[0].id))throw Error('Unexpected automatic DNS identity');
-  receipt.createdRecordID=current[0].id;await save(receipt);
- }
- current=addresses((await inspect(options)).records);
- if(current.length!==1||!expected(current[0]))throw Error('Domain DNS readback mismatch');
+ await assertCurrent();
  receipt.complete=true;await save(receipt);return receipt;
 }
 
@@ -60,6 +63,9 @@ export async function rollbackDomain(options,receipt,{sourceSHA,runID}) {
  if(receipt.pendingMutation)throw Error('Unconfirmed mutation requires manual reconciliation');
  if(receipt.createdRecordID&&receipt.initialAddresses.length)throw Error('Cannot delete a pre-existing root');
  if(receipt.createdDomainID&&receipt.initialDomainID)throw Error('Cannot delete a pre-existing association');
+ const currentBefore=addresses((await inspect(options)).records);
+ if(receipt.createdRecordID&&currentBefore.some(r=>r.id!==receipt.createdRecordID||!expected(r)))throw Error('Root ownership changed; no rollback writes');
+ if(!receipt.createdRecordID&&JSON.stringify(currentBefore)!==JSON.stringify(receipt.initialAddresses))throw Error('Unowned root changed; no rollback writes');
  const call=client(options);
  if(receipt.createdRecordID) {
   if(!identifier(receipt.createdRecordID))throw Error('Invalid rollback DNS identity');

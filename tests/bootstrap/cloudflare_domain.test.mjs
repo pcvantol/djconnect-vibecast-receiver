@@ -14,7 +14,7 @@ function fixture({existing=false,conflict=false,automatic=false,uncertain=false}
   if(path.endsWith('/projects/'+target.project))return reply({id:target.projectID,name:target.project,production_branch:'main',source:null,subdomain:target.project+'.pages.dev',domains:state.domain?[target.domain]:[]});
   if(path.endsWith('/domains')&&method==='POST') {
    if(uncertain)throw Error('synthetic-pages');
-   state.domain={id:'domain-id',name:body.name};if(automatic)state.records=[{...cname}];return reply(state.domain);
+   state.domain={id:'domain-id',name:body.name};if(automatic)state.records=[{...cname,id:'other-actor-record'}];return reply(state.domain);
   }
   if(path.endsWith('/domains/'+target.domain)) {
    if(method==='DELETE'){state.domain=null;return reply(null);}
@@ -42,8 +42,14 @@ test('new root association and DNS restore only same-run exact identities',async
  assert.ok(state.calls.filter(c=>c.method==='DELETE').every(c=>c.path.endsWith(cname.id)||c.path.endsWith('/domains/'+target.domain)));
  assert.ok(!JSON.stringify(receipt).includes('synthetic-'));
 });
-test('Pages automatic CNAME is tracked; pre-existing valid binding is preserved',async()=>{
- const auto=fixture({automatic:true});const created=await bindDomain(auto.options,identity);assert.equal(created.createdRecordID,cname.id);assert.equal(auto.state.calls.filter(c=>c.method==='POST').length,1);await rollbackDomain(auto.options,created,identity);assert.deepEqual(auto.state.records,[]);
+test('replacement by another actor after association cannot be claimed or removed',async()=>{
+ const {state,options}=fixture({automatic:true});let receipt;
+ await assert.rejects(bindDomain(options,{...identity,save:async r=>{receipt=structuredClone(r);}}));
+ assert.equal(receipt.createdRecordID,cname.id);assert.equal(state.records[0].id,'other-actor-record');
+ const before=state.calls.length;await assert.rejects(rollbackDomain(options,receipt,identity));
+ assert.equal(state.calls.slice(before).filter(c=>c.method!=='GET').length,0);assert.equal(state.records[0].id,'other-actor-record');
+});
+test('pre-existing valid binding is preserved without mutation',async()=>{
  const old=fixture({existing:true});const retained=await bindDomain(old.options,identity);assert.equal(retained.createdRecordID,null);assert.equal(retained.createdDomainID,null);await rollbackDomain(old.options,retained,identity);assert.equal(old.state.calls.filter(c=>c.method!=='GET').length,0);assert.equal(old.state.records.length,1);
 });
 test('existing website, changed owned record and foreign rollback receipt cannot be overwritten/deleted',async()=>{
