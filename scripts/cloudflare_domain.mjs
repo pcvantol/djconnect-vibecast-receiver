@@ -5,6 +5,7 @@ import {api,guard} from './promotion_guard.mjs';
 const projectRoute=`/accounts/${target.account}/pages/projects/${target.project}`;
 const domainRoute=projectRoute+'/domains/'+target.domain;
 const dnsRoute=`/zones/${target.zone}/dns_records`;
+const pause=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 const expected=record=>record?.name===target.domain&&record.type==='CNAME'&&record.content===target.project+'.pages.dev'&&record.proxied===true;
 const addresses=records=>records.filter(r=>r.name===target.domain&&['A','AAAA','CNAME'].includes(r.type));
 const identifier=value=>typeof value==='string'&&/^[a-zA-Z0-9-]{1,128}$/.test(value);
@@ -29,32 +30,43 @@ export async function bindDomain(options,{sourceSHA,runID,save=async()=>{}}) {
  const domain=await call(domainRoute,'GET',null,false,true);
  if(domain&&(domain.name!==target.domain||!identifier(domain.id)))throw Error('Unexpected domain identity');
  if(!domain&&prior.length)throw Error('Unassociated existing DNS is not owned by this run');
- const receipt={schema:1,sourceSHA,runID,account:target.account,project:target.project,zone:target.zone,domain:target.domain,initialAddresses:prior,initialDomainID:domain?.id??null,createdDomainID:null,createdRecordID:null,pendingMutation:null,complete:false};
+ const receipt={schema:1,sourceSHA,runID,account:target.account,project:target.project,zone:target.zone,domain:target.domain,initialAddresses:prior,initialDomainID:domain?.id??null,createdDomainID:null,createdRecordID:null,pendingMutation:null,stage:'baseline',complete:false};
  await save(receipt);
  // Create and retain the exact DNS mutation receipt before association. Pages
  // must not cause an observed record to be guessed as this run's property.
  if(!prior.length) {
   const before=addresses((await inspect(options)).records);
   if(before.length)throw Error('Root appeared before DNS creation; ownership is unknown');
-  receipt.pendingMutation='dns-create';await save(receipt);
+  receipt.stage='dns-create';receipt.pendingMutation='dns-create';await save(receipt);
   const created=await call(dnsRoute,'POST',{type:'CNAME',name:target.domain,content:target.project+'.pages.dev',ttl:1,proxied:true},true);
   if(!expected(created)||!identifier(created.id))throw Error('Unexpected created DNS record');
   receipt.createdRecordID=created.id;receipt.pendingMutation=null;await save(receipt);
  }
- const assertCurrent=async()=>{
-  const current=addresses((await inspect(options)).records);
-  const ownedID=receipt.createdRecordID??prior[0]?.id;
-  if(current.length!==1||!expected(current[0])||current[0].id!==ownedID)throw Error('Root identity changed; do not associate or delete');
+ const assertCurrent=async stage=>{
+  receipt.stage=stage;await save(receipt);
+  const deadline=AbortSignal.timeout(30000),request=options.request??fetch;
+  const observedOptions={...options,request:(url,init)=>request(url,{...init,signal:AbortSignal.any([init.signal,deadline])})};
+  for(let attempt=1;attempt<=20&&!deadline.aborted;attempt++) {
+   const current=addresses((await inspect(observedOptions)).records);
+   receipt.rootReadback={attempt,addresses:current};await save(receipt);
+   const ownedID=receipt.createdRecordID??prior[0]?.id;
+   if(current.length) {
+    if(current.length!==1||!expected(current[0])||current[0].id!==ownedID)throw Error('Root identity changed; do not associate or delete');
+    return;
+   }
+   if(attempt<20)await(options.pause??pause)(500);
+  }
+  throw Error('Confirmed root record did not become visible');
  };
- await assertCurrent();
+ await assertCurrent('dns-before-association');
  if(!domain) {
-  receipt.pendingMutation='domain-create';await save(receipt);
+  receipt.stage='domain-create';receipt.pendingMutation='domain-create';await save(receipt);
   const created=await call(projectRoute+'/domains','POST',{name:target.domain});
   if(created?.name!==target.domain||!identifier(created.id))throw Error('Unexpected created domain identity');
   receipt.createdDomainID=created.id;receipt.pendingMutation=null;await save(receipt);
  }
- await assertCurrent();
- receipt.complete=true;await save(receipt);return receipt;
+ await assertCurrent('dns-after-association');
+ receipt.stage='complete';receipt.complete=true;await save(receipt);return receipt;
 }
 
 export async function rollbackDomain(options,receipt,{sourceSHA,runID}) {
