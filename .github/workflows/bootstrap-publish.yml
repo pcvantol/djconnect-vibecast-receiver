@@ -69,7 +69,7 @@ jobs:
       - name: Verify immutable deployment
         run: |
           node -e "const fs=require('fs'); const log=fs.readFileSync('bootstrap-deploy.log','utf8'); const url=log.match(/https:\/\/[a-z0-9]+\.vibecast-tv-bootstrap\.pages\.dev/); if(!url)throw Error('No immutable deployment URL'); fs.writeFileSync('immutable-url.txt',url[0]);"
-          node scripts/readback_bootstrap.mjs dist/bootstrap/build-manifest.json "$(cat immutable-url.txt)"
+          node scripts/wait_bootstrap.mjs dist/bootstrap/build-manifest.json "$(cat immutable-url.txt)" > immutable-readback.json
       - run: node scripts/readback_cast.mjs
       - name: Associate only the fixed root after immutable qualification
         id: bind
@@ -99,6 +99,7 @@ jobs:
           path: |
             cloudflare-readiness.json
             immutable-url.txt
+            immutable-readback.json
             domain-receipt.json
             domain-rollback.json
             root-readback.json

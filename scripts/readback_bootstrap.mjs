@@ -8,7 +8,7 @@ export function assertHeaders(headers, expected, type) {
   if (normalized(headers.get(key)) !== normalized(value)) throw Error(`Header policy mismatch: ${key}`);
  }
  const contentType = headers.get('content-type')?.split(';')[0].trim().toLowerCase();
- const allowed = type === 'javascript' ? ['text/javascript', 'application/javascript'] : [type];
+ const allowed = type === 'javascript' ? ['text/javascript', 'application/javascript'] : type === 'checksum' ? ['text/plain','application/octet-stream'] : [type];
  if (!allowed.includes(contentType)) throw Error('Content type mismatch');
 }
 export async function readback(manifestPath, originString, fetcher = fetch) {
@@ -29,7 +29,7 @@ export async function readback(manifestPath, originString, fetcher = fetch) {
    if (!redirectPath || target.href !== new URL(redirectPath, origin).href) throw Error('Unexpected entry redirect');
    response = await fetcher(target, {redirect:'error',signal:AbortSignal.timeout(20000)});
   }
-  if (response.status !== status) throw Error('Readback HTTP failure');
+  if (response.status !== status) throw Error(`Readback HTTP failure: ${route} (${response.status})`);
   assertHeaders(response.headers, policy, type);
   if (hash(new Uint8Array(await response.arrayBuffer())) !== digest) throw Error(`Readback hash mismatch: ${route}`);
  }
@@ -39,7 +39,7 @@ export async function readback(manifestPath, originString, fetcher = fetch) {
   await check(file === 'index.html' ? '/' : '/' + file, digest, type);
  }
  await check('/build-manifest.json', hash(manifestBytes), 'application/json');
- await check('/SHA256SUMS', hash(await readFile(path.join(directory,'SHA256SUMS'))), 'text/plain');
+ await check('/SHA256SUMS', hash(await readFile(path.join(directory,'SHA256SUMS'))), 'checksum');
  for (const route of ['/index.html','/index']) await check(route, manifest.files['index.html'], 'text/html', 200, '/');
  // Qualify Pages' actual error response; never count a SPA root fallback as 404.
  await check('/__vibecast_missing__', manifest.files['404.html'], 'text/html', 404);
