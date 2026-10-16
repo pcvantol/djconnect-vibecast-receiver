@@ -81,7 +81,20 @@ No PR job receives Cloudflare secrets. Generated governance is unchanged; only
 its separate local extension is widened, and the existing projection validator
 passes without manual projection edits.
 
-## Verified external preflight, 2026-10-15
+## Current delivery checkpoint, 2026-10-16
+
+Source PR17 and owner-selfreview delta PR18 are protected delivered. MainCI38865047408
+and exact downloaded artifact verification PASS on2e6b8f9f29449d5d07931a0bd4c744518b196b33.
+The separate Direct Upload target now exists. Owner-selfreview is applied and read
+back; required owner approval, no admin bypass and protected branches remain.
+No bootstrap deployment yet: scoped Pages environment secret and separate DNS
+access are still missing. deployment.json remains unqualified. See the
+[measured acceptance matrix and next execution steps](qualification/2026-10-16-bootstrap-delivery-checkpoint.md).
+
+The preflight and initial freeze statements below are historical measurements;
+they do not override that current checkpoint.
+
+## Historical verified external preflight, 2026-10-15
 
 Existing OAuth Wrangler readback succeeded. Account identity is pinned in
 bootstrap/deployment.json, which is not part of the public output. Pages currently
@@ -163,11 +176,13 @@ procedures; existing Cast target is not part of provisioning.
    rollback candidate; normal stale-main guard intentionally blocks arbitrary
    old-run promotion). Never overwrite the Cast project or use force push.
 
-Current blockers: exact review/publication approvals; target provisioning and
-qualified CI environment/Pages credential; DNS record read access and bounded
-binding approval; producer rendezvous/TRUST contract plus Core/Apple onboarding.
+Current blockers: scoped Pages CI credential and target qualification; separate
+DNS record read/edit route and prior-binding inventory; producer rendezvous/TRUST
+contract plus Core/Apple onboarding. Source reviews, protected merges, target
+creation and owner-selfreview authorization/configuration have been completed.
 Existing OAuth now resolves account/Pages-read access, so do not request it again.
-The source/pipeline is local; no remote CI/deployment/rollback effects executed.
+The source/pipeline is protected delivered with remote CI and exact artifact
+verification. No bootstrap deployment/domain binding/live rollback executed.
 
 ## Handoff and acceptance labels
 
@@ -178,7 +193,7 @@ Need exact qualified service/wire/crypto/TTL/browserbinding/redirect rules and
 positive/negative fixtures; then static adapter + CSP network allowlist change
 gets its own actual review. No receiver-owned server invention.
 
-SOURCE_DELIVERED pending protected delivery; CI_QUALIFIED local-only; PAGES_DEPLOYED
+SOURCE_DELIVERED YES; CI_QUALIFIED PASS for source/build/browser/artifact; PAGES_DEPLOYED
 NOT_RUN; DOMAIN_TLS_VERIFIED NOT_VERIFIED; RENDEZVOUS_CONNECTED BLOCKED_BY_NAMED_CONTRACT;
 APPLE_HA_ONBOARDING_E2E OPEN; PHYSICAL_TV_ACCEPTANCE NOT_RUN. Own Finalization remains
 pending actual source/CI/publication receipts and its separate candidate gate.
