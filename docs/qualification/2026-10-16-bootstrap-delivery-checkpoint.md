@@ -79,18 +79,23 @@ remains explicitly unavailable and emits no fake QR or service request.
 1. Verify scoped credential availability without logging it, actual environment
    protection and fixed target. Qualify deployment.json through independent
    reviews, required CI and protected merge; leave it unqualified before then.
-2. Use the exact current-main successful trusted CI artifact, verify its manifest
-   and every member, dispatch the protected workflow and provide required owner
-   approval. Never bypass the environment through a local upload.
-3. Read actual immutable deployment and root with normal TLS, all expected
+2. Before workflow dispatch, inventory DNS through a real authorized route,
+   preserve prior values, execute only the bounded approved binding and establish
+   domain/TLS readiness. The current workflow requires root readback in the same
+   run. If actual Pages activation cannot complete before first publication,
+   stop: a separately reviewed staged workflow is needed; no local upload or
+   skipped root check is authorized by this document.
+3. Once those prerequisites hold, use the exact current-main successful trusted
+   CI artifact, verify its manifest and every member, dispatch the protected
+   workflow and provide required owner approval.
+4. Read actual immutable deployment and root with normal TLS, all expected
    hashes/contenttypes and artifact-bound cache/referrer/CSP/permissions policy,
    clean/index redirect and true404. Read existing Cast before and after.
-4. Inventory DNS through a real authorized route before binding. Preserve prior
-   values. On failure remove only the newly added binding/restore exact prior
-   values; no Cast-project rollback or unrelated DNS changes. For later artifact
-   rollback use a dedicated reviewed candidate and the controlled workflow;
-   normal stale-main protection intentionally rejects arbitrary old runs.
-5. Record actual receipts separately, then own protected Finalization and terminal
+5. On failure remove only the newly added binding/restore exact prior values;
+   no Cast-project rollback or unrelated DNS changes. For later artifact rollback
+   use a dedicated reviewed candidate and the controlled workflow; normal
+   stale-main protection intentionally rejects arbitrary old runs.
+6. Record actual receipts separately, then own protected Finalization and terminal
    Core1101 handoff. Leave unqualified onboarding/physical outcomes visibly open.
 
 Requests remain [API90](https://github.com/pcvantol/djconnect-api/issues/90#issuecomment-6201943165),
