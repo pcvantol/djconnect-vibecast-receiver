@@ -187,7 +187,8 @@ procedures; existing Cast target is not part of provisioning.
    OAuth, APNs or DNS credentials for CI; no secrets in chat/files/artifacts.
    Actual protected run38927449565 qualified both read routes and empty DNS.
    deployment.json now pins that read qualification, with INITIAL_BINDING_ONLY
-   mode. Write capability still needs its actual effect/readback. Exact DNS
+   mode. Actual write capability and public root were subsequently qualified by
+   run38935679845; the readiness fields remain historical read evidence. Exact DNS
    permission remains separate from the Pages credential.
 4. After protected main CI success and exact effect approval, dispatch
    Publish VibeCast bootstrap from main with that main candidate_sha and its
@@ -218,13 +219,21 @@ procedures; existing Cast target is not part of provisioning.
    root before upload. No force push or account-wide DNS change.
 
 
-Current open gates: actual controlled Pages/domain/TLS publication and its
-write/readback receipts; producer rendezvous/TRUST contract plus Core/Apple
-onboarding. Scoped read access and initial DNS inventory are now qualified. Source reviews, protected merges, target
-creation and owner-selfreview authorization/configuration have been completed.
-Existing OAuth now resolves account/Pages-read access, so do not request it again.
-The source/pipeline is protected delivered with remote CI and exact artifact
-verification. No bootstrap deployment/domain binding/live rollback executed.
+Actual PUBLIC_WEB_DELIVERY is qualified on source8953171899c47ab54585a626d4041d822822c81e,
+mainCI38935324689 and controlled publication38935679845 SUCCESS. Immutable
+https://6c5dc927.vibecast-tv-bootstrap.pages.dev and https://vibecast.tv passed
+normal TLS, complete artifact hashes/types/headers/redirects/404. Exact scoped
+Pages and DNS credentials worked through the protected environment; no local
+upload route or broad OAuth credential in CI. Initial-binding rollback/recovery
+was actually exercised and original absence read back before final publication.
+See [Finalization and measured evidence](qualification/2026-10-16-bootstrap-public-web-finalization.md).
+
+Current INITIAL_BINDING_ONLY mode intentionally rejects the now-existing root
+before any subsequent upload. A future live-artifact update/rollback needs its
+own reviewed route and concrete candidate; never replay an old cleanup receipt
+against the live binding. The old fixed recovery pins reject the current ID.
+Timer stays paused. Remaining product gates are qualified rendezvous/TRUST,
+HA display admission and Apple scanner/paired-host acceptance, plus physical TV.
 
 ## Handoff and acceptance labels
 
@@ -235,8 +244,12 @@ Need exact qualified service/wire/crypto/TTL/browserbinding/redirect rules and
 positive/negative fixtures; then static adapter + CSP network allowlist change
 gets its own actual review. No receiver-owned server invention.
 
-SOURCE_DELIVERED YES; CI_QUALIFIED PASS for source/build/browser/artifact; PAGES_DEPLOYED
-NOT_RUN; DOMAIN_TLS_VERIFIED NOT_VERIFIED; RENDEZVOUS_CONNECTED BLOCKED_BY_NAMED_CONTRACT;
-APPLE_HA_ONBOARDING_E2E OPEN; PHYSICAL_TV_ACCEPTANCE NOT_RUN. Own Finalization remains
-pending actual source/CI/publication receipts and its separate candidate gate.
-No full VibeCast/shared guest/real CAF/Apple/Cast/LG acceptance is established.
+SOURCE_DELIVERED YES; CI_QUALIFIED PASS; PAGES_DEPLOYED PASS;
+DOMAIN_TLS_VERIFIED PASS; RENDEZVOUS_CONNECTED BLOCKED_BY_NAMED_CONTRACT;
+APPLE_HA_ONBOARDING_E2E OPEN; PHYSICAL_TV_ACCEPTANCE NOT_RUN.
+Live Chromium/WebKit twenty viewport/locale cases PASS_WITH_WARNINGS for the
+recorded native-select CSP diagnostic; no CSP relaxation or hidden errors.
+Own public-web Finalization is prepared after measured publication; its exact
+review/docs-merge/final-main receipts belong in owning10 after execution.
+This does not close the integration dependency or establish shared guest/real
+CAF/Apple/Cast/LG acceptance.
