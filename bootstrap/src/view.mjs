@@ -24,3 +24,20 @@ export function renderState(document, language, current) {
  } else {canvas.width = canvas.height = 0; byId('expiry').textContent='';}
  document.documentElement.dataset.state=current.state;
 }
+
+// Width-only observation avoids loops when canvas redraw changes panel height.
+// One animation-frame redraw coalesces resize bursts without changing lifecycle.
+export function observeQRLayout(document, redraw) {
+ const win = document.defaultView, panel = document.getElementById('qr-panel');
+ let pending = null, lastWidth = -1, stopped = false;
+ const queue = () => {
+  if (stopped || pending !== null) return;
+  pending = win.requestAnimationFrame(() => { pending = null; if (!stopped) redraw(); });
+ };
+ const observer = typeof win.ResizeObserver === 'function' ? new win.ResizeObserver(entries => {
+  const width = Math.floor(entries[0].contentRect.width);
+  if (width !== lastWidth) { lastWidth = width; queue(); }
+ }) : null;
+ observer?.observe(panel); win.addEventListener('resize', queue);
+ return () => { stopped = true; observer?.disconnect(); win.removeEventListener('resize', queue); if (pending !== null) win.cancelAnimationFrame(pending); };
+}

@@ -13,8 +13,8 @@ not a self-referential future hash in this document. This is **local-only**.
   effects, reproducible builds, tamper/privacy and promotion-negative controls.
 - 26 actual Playwright browser tests PASS: Chromium156/WebKit27.2, en/nl/de/fr/es,
   landscape1920x1080/portrait390x844, production no-service/QR suppression,
-  unsolicited URL discard, empty storage, no external requests, remote/keyboard
-  focus, preferences/security headers, real browser expiry and localized state UI.
+  unsolicited URL discard, empty storage, no external requests, keyboard
+  focus (desktop proxy; physical remote NOT_RUN), preferences/security headers, real browser expiry and localized state UI.
   Test adapters/matrices explicitly synthetic, not a real scannable service QR.
 - Two identical builds and exact artifact verifier PASS. Checksum file includes
   manifest and all static assets. Local restore of tampered previous bytes PASS;

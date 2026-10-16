@@ -29,22 +29,26 @@ export class BootstrapController {
       // Preserve the original deadline: reconnect never creates or renews it.
       this.challenge = Object.freeze({ ...challenge, expiresAt: challenge.expiresAt });
       this.monotonicDeadline = this.monotonic() + challenge.expiresAt - this.now();
-      this.armDeadline(generation); this.show('waiting', { challenge: this.challenge });
+      if (!this.armDeadline(generation)) return;
+      this.show('waiting', { challenge: this.challenge });
       await this.receive(generation);
     } catch { if (generation === this.generation) this.show('recovering'); }
   }
   armDeadline(generation) {
+    if (generation !== this.generation || !this.challenge) return false;
     this.cancel(this.timer);
     const remaining = Math.min(this.challenge.expiresAt - this.now(), this.monotonicDeadline - this.monotonic());
-    if (remaining <= 0) return this.fail('expired');
+    if (remaining <= 0) { this.fail('expired'); return false; }
     this.timer = this.schedule(() => {
       if (generation !== this.generation) return;
       // Timers may fire early or be capped by the browser for large deadlines.
       this.armDeadline(generation);
     }, Math.min(remaining, 2147483647));
+    return true;
   }
   fail(state) { this.invalidate(); this.show(state); }
   async receive(generation) {
+    if (!this.current(generation)) return;
     const challenge = this.challenge;
     try {
       const envelope = await this.adapter.wait({ challenge, signal: this.abort.signal,
@@ -75,7 +79,7 @@ export class BootstrapController {
     if (!this.current(generation)) return;
     // Abort the previous channel; generation fences even adapters ignoring abort.
     this.abort?.abort(); this.abort = new AbortController(); this.generation++;
-    this.armDeadline(this.generation);
+    if (!this.armDeadline(this.generation)) return;
     this.show('waiting', { challenge: this.challenge });
     await this.receive(this.generation);
   }

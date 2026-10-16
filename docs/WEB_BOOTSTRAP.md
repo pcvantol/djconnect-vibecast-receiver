@@ -48,7 +48,9 @@ initial qualification only; thermal/long-running older-TV qualification remains
 NOT_RUN. No native Liquid Glass claim.
 
 Opaque QR panel with four-module quiet zone, integer-pixel drawing, no blur or
-animation. Only waiting/confirming states expose it; all others erase the canvas.
+animation. Only waiting/confirming states expose it; all others erase the canvas. Width-only
+ResizeObserver plus a frame-coalesced resize fallback redraws the raster at
+integer module sizes after orientation changes, without renewing the challenge.
 Locale-complete en/nl/de/fr/es controls/states, live region, semantic headings,
 visible focus and 44px controls. Unsupported script engines retain static secure
 browser guidance. Browser tests exercise real Chromium and WebKit with production
@@ -133,7 +135,9 @@ procedures; existing Cast target is not part of provisioning.
    Project/config unknown, fork/PR/failed/stale/wrong artifact all fail closed.
 5. Wrangler deploys only the prebuilt artifact; no rebuild during promotion.
    Measure immutable deployment and custom root, no certificate bypass: expected
-   file bytes/types, manifest identity, no-store/no-referrer/nosniff/CSP/permissions.
+   file bytes/types, manifest identity and the complete artifact-bound headerpolicy,
+   including cache/referrer/nosniff/frame/HSTS/CSP/permissions on final entries,
+   assets, manifest/checksums and the actual HTTP404 page.
    Compare existing Cast HTTPS HTML/manifest/privacy both before and after.
    Save sanitized deployment identity, previous deployment/binding, approvals,
    artifact digest and HTTPS receipts. Workflow failures remain failures, never

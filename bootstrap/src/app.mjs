@@ -1,4 +1,4 @@
-import {renderState} from './view.mjs';
+import {renderState, observeQRLayout} from './view.mjs';
 import { BootstrapController, unavailableAdapter } from './lifecycle.mjs';
 import { selectLocale } from './locales.mjs';
 import { chooseEffects, sampleFrames } from './effects.mjs';
@@ -12,6 +12,7 @@ const transparency = matchMedia('(prefers-reduced-transparency: reduce)');
 let observed = [], effectGeneration = 0;
 function paint(){ renderState(document,language,current); }
 
+observeQRLayout(document, () => { if (['waiting','confirming'].includes(current.state)) paint(); });
 const controller = new BootstrapController({ adapter: unavailableAdapter, render: state => {current=state;paint();}, navigate: url => location.replace(url) });
 function supported() {return isSecureContext && !!globalThis.crypto?.subtle && typeof AbortController === 'function' && typeof URL === 'function';}
 async function effects() {
