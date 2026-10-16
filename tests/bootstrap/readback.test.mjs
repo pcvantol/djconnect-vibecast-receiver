@@ -16,3 +16,14 @@ test('HTTPS readback rejects each missing required header and partial CSP/permis
  }
 });
 test('manifest, clean entry and error routes must also carry the full policy',async()=>{for(const target of ['/build-manifest.json','/index','/__vibecast_missing__']){const fetcher=await fixture((headers,route)=>{if(route===target)delete headers['content-security-policy'];});await assert.rejects(readback('dist/readback-fixture/build-manifest.json','https://bootstrap.example',fetcher),/Header policy mismatch/);}});
+
+test('inert checksum download MIME is explicit; executable and document MIME checks remain strict',async()=>{
+ const download=await fixture((headers,route)=>{if(route==='/SHA256SUMS')headers['content-type']='application/octet-stream';});
+ assert.equal((await readback('dist/readback-fixture/build-manifest.json','https://bootstrap.example',download)).outcome,'PASS');
+ for(const target of ['/app.mjs','/','/style.css','/build-manifest.json']){
+  const wrong=await fixture((headers,route)=>{if(route===target)headers['content-type']='application/octet-stream';});
+  await assert.rejects(readback('dist/readback-fixture/build-manifest.json','https://bootstrap.example',wrong),/Content type mismatch/);
+ }
+ const unsafe=await fixture((headers,route)=>{if(route==='/SHA256SUMS')headers['content-type']='text/html';});
+ await assert.rejects(readback('dist/readback-fixture/build-manifest.json','https://bootstrap.example',unsafe),/Content type mismatch/);
+});
