@@ -16,13 +16,13 @@ test('every genuine UI state is localized and withdraws old QR pixels',async({pa
  for(const language of ['en','nl','de','fr','es'])for(const state of states){renderState(document,language,{state,challenge:{expiresAt:Date.now()+1000,matrix:Array.from({length:21},()=>Array(21).fill(true))}});const c=document.getElementById('qr');result.push({state,visible:!document.getElementById('qr-panel').hidden,title:document.getElementById('state-title').textContent,pixels:c.width,quiet:state==='waiting'?Array.from(c.getContext('2d').getImageData(0,0,1,1).data):null});}return result;});
  for(const result of results){expect(result.title.length).toBeGreaterThan(5);expect(result.visible).toBe(['waiting','confirming'].includes(result.state));if(!result.visible)expect(result.pixels).toBe(0);if(result.quiet)expect(result.quiet).toEqual([255,255,255,255]);}
 });
-test('QR layout stays integer-scaled across landscape/portrait without changing its deadline',async({page})=>{
+for(const state of ['waiting','confirming'])for(const size of [21,177])test(`QR ${state}/${size} stays sharp and within the viewport after orientation changes`,async({page})=>{
  await page.setViewportSize({width:1920,height:1080});await page.goto('/');
- await page.evaluate(async()=>{const{renderState,observeQRLayout}=await import('/view.mjs');const state={state:'waiting',challenge:{expiresAt:Date.now()+60000,matrix:Array.from({length:21},()=>Array(21).fill(true))}};const redraw=()=>renderState(document,'en',state);redraw();window.testOnlyQRStop=observeQRLayout(document,redraw);});
+ await page.evaluate(async({state,size})=>{const{renderState,observeQRLayout}=await import('/view.mjs');const projection={state,challenge:{expiresAt:Date.now()+60000,matrix:Array.from({length:size},()=>Array(size).fill(true))}};const redraw=()=>renderState(document,'en',projection);redraw();window.testOnlyQRStop=observeQRLayout(document,redraw);},{state,size});
  const deadline=await page.locator('#expiry').textContent();
- for(const viewport of [{width:390,height:844},{width:1920,height:1080}]){
+ for(const viewport of [{width:390,height:844},{width:320,height:720},{width:1920,height:1080}]){
   await page.setViewportSize(viewport);
-  await expect.poll(async()=>page.locator('#qr').evaluate(canvas=>{const rect=canvas.getBoundingClientRect(),available=document.getElementById('qr-panel').clientWidth-32;return rect.width===canvas.width&&canvas.width%29===0&&rect.width<=available;})).toBe(true);
+  await expect.poll(async()=>page.locator('#qr').evaluate((canvas,size)=>{const rect=canvas.getBoundingClientRect(),panel=document.querySelector('.panel').getBoundingClientRect(),available=document.getElementById('qr-panel').clientWidth-32;return rect.width===canvas.width&&canvas.width%(size+8)===0&&rect.width<=available&&document.documentElement.scrollWidth<=innerWidth&&panel.right<=innerWidth&&panel.left>=0;},size)).toBe(true);
   await expect(page.locator('#expiry')).toHaveText(deadline);
  }
  await page.evaluate(()=>window.testOnlyQRStop());

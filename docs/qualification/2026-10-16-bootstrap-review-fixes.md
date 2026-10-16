@@ -28,17 +28,21 @@ these initial results are retained and are not relabeled as success.
 - P2: resize/orientation could fractionally scale an old QR raster. Canvas now
   keeps intrinsic integer dimensions; bounded frame-coalesced resize/width-only
   ResizeObserver redraw recomputes scale. It does not request a new challenge,
-  renew expiry or alter controller generation. Actual Chromium/WebKit regression
-  exercises landscape→portrait→landscape, exact raster/CSS width, module integer
-  size, available panel fit and unchanged original deadline.
+  renew expiry or alter controller generation. The first herreview on dc4e85f
+  found min-content overflow despite an integer canvas: the old fit assertion
+  compared against a panel that itself exceeded the viewport. Grid tracks and
+  items are now bounded by minmax(0,...) and min-width:0. Actual Chromium/WebKit regression
+  exercises landscape→390/320px portrait→landscape in waiting AND confirming,
+  both 21x21 and 177x177 synthetic matrices, exact raster/CSS width, module integer
+  size, available panel fit, root/panel viewport bounds and unchanged deadline.
 - P3: initial qualification wording overstated remote evidence. It now states
   keyboard focus as a desktop proxy; physical remote remains NOT_RUN.
 
 ## Actual fix validation
 
-44Node tests +9Python tests PASS. 28actual Chromium156/WebKit27.2 tests PASS,
+44Node tests +9Python tests PASS. 34actual Chromium156/WebKit27.2 tests PASS,
 five languages and both orientations, including all prior cases and the new
-resize regression. Workflow YAML parse/node syntax/diffcheck PASS. Cast
+resize/viewport regression. Workflow YAML parse/node syntax/diffcheck PASS. Cast
 wwwroot/vendor/source locks remain unchanged. No new fixture or service in the
 public build; original QR matrices remain explicitly synthetic/non-scannable.
 
