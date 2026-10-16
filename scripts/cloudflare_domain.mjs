@@ -1,5 +1,5 @@
 import {readFile,writeFile} from 'node:fs/promises';
-import {inspect,target} from './cloudflare_readiness.mjs';
+import {inspect,target,safeReadFailure} from './cloudflare_readiness.mjs';
 import {api,guard} from './promotion_guard.mjs';
 
 const projectRoute=`/accounts/${target.account}/pages/projects/${target.project}`;
@@ -79,6 +79,8 @@ export async function rollbackDomain(options,receipt,{sourceSHA,runID}) {
  if(receipt.createdRecordID&&currentBefore.some(r=>r.id!==receipt.createdRecordID||!expected(r)))throw Error('Root ownership changed; no rollback writes');
  if(!receipt.createdRecordID&&JSON.stringify(currentBefore)!==JSON.stringify(receipt.initialAddresses))throw Error('Unowned root changed; no rollback writes');
  const call=client(options);
+ const domainBefore=await call(domainRoute,'GET',null,false,true);
+ if(domainBefore&&(domainBefore.name!==target.domain||domainBefore.id!==(receipt.createdDomainID??receipt.initialDomainID)))throw Error('Association ownership changed; no rollback writes');
  if(receipt.createdRecordID) {
   if(!identifier(receipt.createdRecordID))throw Error('Invalid rollback DNS identity');
   const route=dnsRoute+'/'+receipt.createdRecordID,record=await call(route,'GET',null,true,true);
@@ -103,7 +105,7 @@ export async function rollbackDomain(options,receipt,{sourceSHA,runID}) {
 
 if(process.argv[1]===new URL(import.meta.url).pathname) {
  try {
-  const options={pagesToken:process.env.CLOUDFLARE_API_TOKEN,dnsToken:process.env.CLOUDFLARE_DNS_API_TOKEN,account:process.env.CLOUDFLARE_ACCOUNT_ID};
+  const options={pagesToken:process.env.CLOUDFLARE_API_TOKEN,dnsToken:process.env.CLOUDFLARE_DNS_API_TOKEN,account:process.env.CLOUDFLARE_ACCOUNT_ID,observe:observation=>writeFile('cloudflare-read-observation.json',JSON.stringify(observation,null,2)+'\n')};
   if(options.account!==target.account||!options.pagesToken||!options.dnsToken)throw Error('Missing scoped credentials');
   const identity={sourceSHA:process.env.GITHUB_SHA,runID:process.env.GITHUB_RUN_ID};
   if(process.argv[2]==='bind') {
@@ -116,5 +118,5 @@ if(process.argv[1]===new URL(import.meta.url).pathname) {
    await writeFile('domain-rollback.json',JSON.stringify(await rollbackDomain(options,receipt,identity),null,2)+'\n');
    process.stdout.write('Only this run created root binding restored; Pages artifact retained\n');
   } else throw Error('Unknown action');
- }catch {process.stderr.write('Domain operation failed; inspect sanitized receipt, no provider body or credential logged\n');process.exitCode=1;}
+ }catch(error) {const failure=safeReadFailure(error);await writeFile('cloudflare-failure.json',JSON.stringify(failure,null,2)+'\n');process.stderr.write(JSON.stringify(failure)+'\n');process.exitCode=1;}
 }
