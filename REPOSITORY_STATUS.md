@@ -15,8 +15,9 @@ See [delivery checkpoint and acceptance matrix](docs/qualification/2026-10-16-bo
 Separate Direct Upload Pages target exists, but no bootstrap artifact has been
 published. Owner-selfreview was explicitly authorized, applied and read back;
 required owner approval, protected branches and no admin bypass remain enforced.
-Pages environment secret CLOUDFLARE_API_TOKEN is absent at current readback.
-Separate vibecast.tv DNS read/edit access is missing. deployment.json remains
+Peter has now saved both environment secrets; GitHub name readback confirms
+CLOUDFLARE_API_TOKEN and CLOUDFLARE_DNS_API_TOKEN. The protected read-only access
+workflow must qualify actual Pages/DNS reads before any write. deployment.json remains
 unqualified; no local route bypasses the controlled workflow.
 
 SOURCE_DELIVERED=YES; CI_QUALIFIED=PASS (source/build/browser/artifact);
