@@ -1,0 +1,45 @@
+name: Verify VibeCast Cloudflare access
+on:
+  workflow_dispatch:
+    inputs:
+      candidate_sha:
+        description: Exact protected main SHA
+        required: true
+        type: string
+      artifact_run_id:
+        description: Successful Verify receiver push/main run for that SHA
+        required: true
+        type: string
+permissions:
+  contents: read
+  actions: read
+concurrency:
+  group: vibecast-bootstrap-production
+  cancel-in-progress: false
+jobs:
+  inspect:
+    if: github.repository == 'pcvantol/djconnect-vibecast-receiver' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: vibecast-production
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1
+        with:
+          node-version: 24
+      - name: Read fixed Pages project and bounded DNS inventory
+        env:
+          GH_TOKEN: ${{ github.token }}
+          CANDIDATE_SHA: ${{ inputs.candidate_sha }}
+          ARTIFACT_RUN_ID: ${{ inputs.artifact_run_id }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_DNS_API_TOKEN: ${{ secrets.CLOUDFLARE_DNS_API_TOKEN }}
+        run: node scripts/cloudflare_readiness.mjs
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: cloudflare-readiness-${{ github.sha }}
+          path: cloudflare-readiness.json
+          if-no-files-found: error
+          retention-days: 2

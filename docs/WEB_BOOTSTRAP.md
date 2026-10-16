@@ -114,6 +114,29 @@ through an owner-authorized DNS-read route before any binding. No account/zone/
 DNS/project changes have been made. GitHub secret-name and environment inventories
 were empty; local OAuth access is not a minimally scoped CI credential.
 
+## Scoped credential and DNS read preflight
+
+Peter confirmed both environment secrets saved on2026-10-16. GitHub secret-name
+readback confirms CLOUDFLARE_API_TOKEN and CLOUDFLARE_DNS_API_TOKEN; values are
+never retrieved locally. Presence alone is not credential qualification.
+
+Dispatch **Verify VibeCast Cloudflare access** from exact current protected main,
+with its successful Verify receiver push/main run id. Required owner environment
+approval still applies. The same repository/branch/current-main/trusted-CI and
+non-bypassable owner-review checks run before any Cloudflare request. The read
+workflow deliberately does not require deployment.json QUALIFIED: it is the
+bounded readback needed before that later reviewed qualification.
+
+The two tokens are used separately for GET-only requests to the pinned Pages
+project and vibecast.tv zone. Redirects, incomplete/changing pagination, wrong
+project/integration/branch or foreign-zone records fail closed. The receipt lists
+DNS identity/type/TTL/proxy metadata and A/AAAA/CNAME contents; unrelated TXT/MX
+contents and credentials are excluded. Provider error bodies are not logged.
+No build dependencies or PR code receive either secret. The sanitized two-day
+artifact proves read access only; edit capability, binding, deployment and TLS
+remain untested until their own actual controlled effects/readbacks. Review the
+real DNS inventory before planning any change; never infer absence from error.
+
 ## Owner-approved environment review mode, 2026-10-16
 
 Peter explicitly stated in the owning Workchat: “Ik geef expliciete toestemming
