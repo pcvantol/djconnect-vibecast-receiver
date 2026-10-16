@@ -59,3 +59,17 @@ test('read diagnostics contain only fixed status, numeric pagination and identit
  assert.equal(safeReadFailure(Error('Cloudflare read access denied')).reason,'Cloudflare read access denied');
  assert.equal(safeReadFailure(Error('synthetic-dns-secret')).reason,'Unclassified local failure');
 });
+
+test('stable inspection retries only full inconsistent inventories, never accepts one or retries foreign identities',async()=>{
+ const {inspectStable}=await import('../../scripts/cloudflare_readiness.mjs');
+ for(const lag of [2,100]) {
+  const {options}=setup();const previous=options.request;let reads=0;
+  options.pause=async()=>{};options.request=async(url,opts)=>{
+   const response=await previous(url,opts);if(url.includes('/dns_records')&&++reads<=lag){const body=await response.json();body.result_info.total_count=0;return {...response,json:async()=>body};}return response;
+  };
+  if(lag===2){const result=await inspectStable(options);assert.equal(result.records.length,2);assert.equal(reads,3);}
+  else {await assert.rejects(inspectStable(options),/Incomplete DNS inventory/);assert.equal(reads,20);}
+ }
+ const {options,calls}=setup({foreign:true});options.pause=async()=>{};
+ await assert.rejects(inspectStable(options),/Unexpected DNS record identity/);assert.equal(calls.length,2);
+});
