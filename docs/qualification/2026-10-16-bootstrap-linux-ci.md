@@ -1,5 +1,8 @@
 # Linux CI qualification delta
 
+This is the pre-push freeze record. For later actual results and owner policy
+execution, see [the measured delivery checkpoint](2026-10-16-bootstrap-delivery-checkpoint.md).
+
 PR17 first tested5cb148e and diagnostic09b62e. Both Linux runs correctly failed
 required `test` on all eight QR-resize cases;26other browser cases passed. The
 original runs/logs/traces remain evidence, not PASS. macOS qualification alone
