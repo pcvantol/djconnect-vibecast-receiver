@@ -70,3 +70,10 @@ test('confirmed own record can propagate through empty lists; other identities s
  assert.equal(done.complete,true);assert.equal(receipt.createdRecordID,cname.id);assert.equal(receipt.stage,'complete');
  const absent=fixture({visibilityDelay:100});await assert.rejects(bindDomain(absent.options,identity),/did not become visible/);
 });
+
+test('rollback refuses an unowned association before any DNS deletion',async()=>{
+ const {state,options}=fixture();const receipt=await bindDomain(options,identity);
+ state.domain={id:'foreign-domain',name:target.domain};state.calls=[];
+ await assert.rejects(rollbackDomain(options,receipt,identity));
+ assert.equal(state.calls.filter(call=>call.method==='DELETE').length,0);
+});

@@ -48,3 +48,14 @@ test('initial publication cannot overwrite an already associated or addressed ro
  assert.throws(()=>guardInitialPublication({...receipt,records:[{name:target.domain,type:'A',content:'192.0.2.1'}]}));
  assert.throws(()=>guardInitialPublication({...receipt,read_access:'UNKNOWN'}));
 });
+
+test('read diagnostics contain only fixed status, numeric pagination and identity booleans',async()=>{
+ const {options}=setup();const observations=[];
+ await inspect({...options,observe:async value=>observations.push(value)});
+ const raw=JSON.stringify(observations);
+ for(const secret of ['synthetic-pages-secret','synthetic-dns-secret','must-not-export','vibecast.tv','record'])assert.ok(!raw.includes(secret));
+ assert.equal(observations.at(-1).info.total_count,2);assert.equal(observations.at(-1).identities[0].name,true);
+ const {safeReadFailure}=await import('../../scripts/cloudflare_readiness.mjs');
+ assert.equal(safeReadFailure(Error('Cloudflare read access denied')).reason,'Cloudflare read access denied');
+ assert.equal(safeReadFailure(Error('synthetic-dns-secret')).reason,'Unclassified local failure');
+});

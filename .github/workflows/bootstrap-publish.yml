@@ -98,6 +98,8 @@ jobs:
           name: bootstrap-publication-${{ github.sha }}-${{ github.run_id }}
           path: |
             cloudflare-readiness.json
+            cloudflare-read-observation.json
+            cloudflare-failure.json
             immutable-url.txt
             immutable-readback.json
             domain-receipt.json
