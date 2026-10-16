@@ -1,8 +1,9 @@
 # Current bounded work — 2026-10-16
 
 DJC-VIBECAST-TV-BOOTSTRAP-CLOUDFLARE-V1-20261015 / [#16](https://github.com/pcvantol/djconnect-vibecast-receiver/issues/16).
-One receiverwriter in /private/tmp/vibecast16-work; documentation checkpoint
-branch codex/vibecast-delivery-checkpoint, base2e6b8f9f29449d5d07931a0bd4c744518b196b33.
+One receiverwriter in /private/tmp/vibecast16-work; controlled publication
+branch codex/vibecast-controlled-pages-publication, based on protectedPR20
+main d0107eacb02b33f170dd24c7a13b740808102058.
 Core predecessor source1181 plus Finalization1183 delivered; definitive design/DAG
 f32b625eb0a3d1b8abfc2c81378d25d769c6766d. No Core/API/Apple source writes.
 
@@ -16,12 +17,14 @@ Separate Direct Upload Pages target exists, but no bootstrap artifact has been
 published. Owner-selfreview was explicitly authorized, applied and read back;
 required owner approval, protected branches and no admin bypass remain enforced.
 Peter has now saved both environment secrets; GitHub name readback confirms
-CLOUDFLARE_API_TOKEN and CLOUDFLARE_DNS_API_TOKEN. The protected read-only access
-workflow must qualify actual Pages/DNS reads before any write. deployment.json remains
-unqualified; no local route bypasses the controlled workflow.
+CLOUDFLARE_API_TOKEN and CLOUDFLARE_DNS_API_TOKEN. Actual protected read-only run38927449565 SUCCESS confirms
+fixed Pages identity and a complete empty DNS inventory. deployment.json pins
+this qualified read route; write capability/publication/TLS remain unmeasured.
+See [staged first publication and rollback](docs/qualification/2026-10-16-bootstrap-publication-route.md).
+No local route bypasses the controlled workflow.
 
 SOURCE_DELIVERED=YES; CI_QUALIFIED=PASS (source/build/browser/artifact);
-PAGES_DEPLOYED=NOT_RUN_ACCESS_GATE; DOMAIN_TLS_VERIFIED=NOT_VERIFIED;
+PAGES_DEPLOYED=NOT_RUN_PUBLICATION_GATE; DOMAIN_TLS_VERIFIED=NOT_VERIFIED;
 RENDEZVOUS_CONNECTED=BLOCKED_BY_NAMED_CONTRACT; APPLE_HA_ONBOARDING_E2E=OPEN;
 PHYSICAL_TV_ACCEPTANCE=NOT_RUN. Own issue16 Finalization and Core1101 terminal
 handoff remain pending. This checkpoint is not full PUBLIC_WEB_DELIVERY closure.

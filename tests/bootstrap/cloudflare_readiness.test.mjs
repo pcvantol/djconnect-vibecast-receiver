@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {inspect,target} from '../../scripts/cloudflare_readiness.mjs';
+import {inspect,target,guardInitialPublication} from '../../scripts/cloudflare_readiness.mjs';
 
 const project={id:target.projectID,name:target.project,production_branch:'main',source:null,subdomain:target.project+'.pages.dev'};
 const record={id:'record',name:target.domain,type:'CNAME',content:target.project+'.pages.dev',ttl:1,proxied:true};
@@ -39,4 +39,12 @@ test('pagination rejects duplicate identities, count drift and page-count drift'
   if(fault==='none')assert.equal((await inspect(options)).records.length,2);
   else await assert.rejects(inspect(options));
  }
+});
+
+test('initial publication cannot overwrite an already associated or addressed root',()=>{
+ const receipt={domain:target.domain,project:{id:target.projectID,domains:[target.project+'.pages.dev']},read_access:'PASS',records:[]};
+ assert.doesNotThrow(()=>guardInitialPublication(receipt));
+ assert.throws(()=>guardInitialPublication({...receipt,project:{...receipt.project,domains:[target.domain]}}));
+ assert.throws(()=>guardInitialPublication({...receipt,records:[{name:target.domain,type:'A',content:'192.0.2.1'}]}));
+ assert.throws(()=>guardInitialPublication({...receipt,read_access:'UNKNOWN'}));
 });
