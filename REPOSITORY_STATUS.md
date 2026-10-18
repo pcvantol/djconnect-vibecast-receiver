@@ -1,7 +1,7 @@
 # Current receiver consumer work — 2026-10-18
 
 Same receiver#16 writer in /private/tmp/vibecast16-work, branch
-codex/vibecast-readonly-renderer, clean baseline main fe0916f.
+codex/vibecast-readonly-finalization, based on protected source main954cce58.
 Core1202 source5f36abd2 plus Finalization1203/6a3adbc8 are delivered.
 The published readonly renderer bundle is imported byte-for-byte; unchanged
 importer/verifier/status schema/CAF adapter/local adapter, no Core source build.
@@ -9,9 +9,10 @@ See [readonly import and effect boundaries](docs/CAST_READONLY_RETIREMENT.md).
 
 Local import, exact prior-status rollback/reapply, Node/Python and actual
 Chromium/WebKit execution qualify receiving software. CAF/HA are modeled in
-those browser tests. Exact independent reviews, protected source delivery and
-new Cast Pages readback remain pending at preparation. No new public artifact
-is claimed from source-only checks. Existing vibecast.tv bootstrap publication
+those browser tests. Both exact independent reviews GO; sourcePR27 protected merged954cce58 with
+reviewed-tree equality, exact source-mainCI39086846662 PASS and production
+4aa9e79d measured HTTPS/bytes/types/privacy PASS. Separate documentary
+Finalization is prepared, not terminal until owning#10 exact reconciliation. Existing vibecast.tv bootstrap publication
 remains unchanged; source/runtime entry and Cast AppID are retained.
 
 Rendezvous A remains NOT_FROZEN/NO_RUNTIME_GO; current installed HA-dev lacks
