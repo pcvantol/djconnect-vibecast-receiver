@@ -1,3 +1,26 @@
+# Current receiver consumer work — 2026-10-18
+
+Same receiver#16 writer in /private/tmp/vibecast16-work, branch
+codex/vibecast-readonly-renderer, clean baseline main fe0916f.
+Core1202 source5f36abd2 plus Finalization1203/6a3adbc8 are delivered.
+The published readonly renderer bundle is imported byte-for-byte; unchanged
+importer/verifier/status schema/CAF adapter/local adapter, no Core source build.
+See [readonly import and effect boundaries](docs/CAST_READONLY_RETIREMENT.md).
+
+Local import, exact prior-status rollback/reapply, Node/Python and actual
+Chromium/WebKit execution qualify receiving software. CAF/HA are modeled in
+those browser tests. Exact independent reviews, protected source delivery and
+new Cast Pages readback remain pending at preparation. No new public artifact
+is claimed from source-only checks. Existing vibecast.tv bootstrap publication
+remains unchanged; source/runtime entry and Cast AppID are retained.
+
+Rendezvous A remains NOT_FROZEN/NO_RUNTIME_GO; current installed HA-dev lacks
+separate display-admission B. Neither renderer import nor browser/JWE proof
+supplies A trust, a B screen principal, HA admission or physical/native acceptance.
+No new producer writer, installation, pairing, cloud configuration or timer.
+
+---
+
 # Current bounded work — 2026-10-16
 
 DJC-VIBECAST-TV-BOOTSTRAP-CLOUDFLARE-V1-20261015 / [#16](https://github.com/pcvantol/djconnect-vibecast-receiver/issues/16).

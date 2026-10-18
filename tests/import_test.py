@@ -97,6 +97,21 @@ class HistoricalRollbackTest(unittest.TestCase):
             self.assertEqual(page.read_bytes(),(ROOT/'wwwroot/index.html').read_bytes())
             importer.adopt(ROOT/'vibecast-source-lock.json',root=root,check=True)
 
+class ReadonlyRollbackTest(unittest.TestCase):
+    def test_prior_status_pin_restores_exact_bytes_and_readonly_pin_reapplies(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp).resolve()
+            shutil.copytree(ROOT / 'vendor', root / 'vendor')
+            shutil.copytree(ROOT / 'wwwroot', root / 'wwwroot')
+            importer.adopt(ROOT / 'vibecast-source-lock-1.1.0.json', root=root)
+            page = root / 'wwwroot/index.html'
+            self.assertEqual(importer.sha256(page.read_bytes()), 'cdd24ff51d0719d07d0929d7ab6c988df1b77e10b753f06028ad13b3caad9a14')
+            self.assertIn(b'end-session', page.read_bytes())
+            importer.adopt(ROOT / 'vibecast-source-lock.json', root=root)
+            self.assertNotIn(b'end-session', page.read_bytes())
+            self.assertEqual(page.read_bytes(), (ROOT / 'wwwroot/index.html').read_bytes())
+            importer.adopt(ROOT / 'vibecast-source-lock.json', root=root, check=True)
+
 class LocalHostBoundaryTest(unittest.TestCase):
     def test_local_pi_adapter_unchanged_and_both_entries_share_the_pinned_renderer(self):
         import runpy
