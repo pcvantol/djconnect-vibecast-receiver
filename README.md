@@ -22,3 +22,7 @@ Generated `wwwroot/index.html` must never be hand-edited. Source adoption does
 not establish Pages, real CAF, physical Cast or Apple-sender acceptance.
 
 See [1.1.0 status adoption and publication boundary](docs/CAST_STATUS_ADOPTION_1_1.md).
+
+The readonly retirement import from protected Core `6a3adbc8` removes the obsolete
+Session-end control while retaining build/status wire 1.1.0. See
+[exact pins, qualification and promotion boundaries](docs/CAST_READONLY_RETIREMENT.md).

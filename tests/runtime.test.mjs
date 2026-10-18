@@ -21,7 +21,7 @@ test('imported renderer shows current snapshot, two sources and later same-track
   for(const lang of ['en','nl','de','fr','es']){
     const r=runtime(lang);assert.equal(r.sockets.length,0);r.handoff();const s=r.sockets[0];
     assert.ok(s.url.startsWith('wss://ha.test/api/djconnect/v1/session/broadcast/ws/s?'));s.onopen();r.frame(s,snapshot('s',lang));
-    assert.equal(r.document.documentElement.lang,lang);assert.equal(r.elements.get('title').textContent,'Track');assert.equal(r.elements.get('progress').value,60000);assert.equal(r.elements.get('artwork').src,'https://ha.test/cover');assert.equal(r.elements.get('moment').textContent,'First persona text');assert.equal(r.elements.get('moment-source').hidden,false);assert.equal(r.elements.get('moment-source-previous').hidden,false);assert.equal(r.elements.get('end-session').hidden,true);
+    assert.equal(r.document.documentElement.lang,lang);assert.equal(r.elements.get('title').textContent,'Track');assert.equal(r.elements.get('progress').value,60000);assert.equal(r.elements.get('artwork').src,'https://ha.test/cover');assert.equal(r.elements.get('moment').textContent,'First persona text');assert.equal(r.elements.get('moment-source').hidden,false);assert.equal(r.elements.get('moment-source-previous').hidden,false);assert.equal(r.elements.has('end-session'),false);
     const event={type:'event',data:{session_id:'s',delivery_sequence:2,event_type:'dj_moment_published',payload:{dj_moment:moment('m2','Second persona text')}}};r.frame(s,event);assert.equal(r.elements.get('moment').textContent,'Second persona text');r.frame(s,event);assert.equal(r.elements.get('moment').textContent,'Second persona text');
     r.frame(s,{type:'event',data:{session_id:'s',delivery_sequence:1,event_type:'playback_changed',payload:{playback:{title:'Stale'}}}});assert.equal(r.elements.get('title').textContent,'Track');
     r.frame(s,{type:'event',data:{session_id:'s',delivery_sequence:3,event_type:'runtime_ended',payload:{}}});assert.equal(r.elements.get('moment').textContent,'');assert.equal(r.elements.get('artwork').hidden,true);assert.ok(s.closed);
@@ -32,4 +32,16 @@ test('new handoff and host-stop invalidate late callbacks/reconnect, incompatibl
   r.handoff('new');const active=r.sockets[1];r.frame(active,snapshot('new'));r.frame(old,snapshot('old'));assert.equal(r.elements.get('title').textContent,'Track');old.onclose();assert.equal(r.sockets.length,2);
   r.window.dispatchEvent({type:'djconnect-host-stop'});r.frame(active,snapshot('new'));assert.equal(r.elements.get('title').textContent,'Waiting for a session');assert.equal(r.timers.size,0);assert.ok(active.closed);
   r.handoff('wrong');const wrong=r.sockets.at(-1);const f=snapshot('wrong');f.capabilities.owner_controls=true;r.frame(wrong,f);assert.match(r.elements.get('state').textContent,/compatible/);assert.ok(wrong.closed);
+});
+
+test('retired screen authority is absent and a directly injected legacy grant cannot create controls',()=>{
+  assert.doesNotMatch(page,/end-session|endGrant|end_grant|broadcast\/control\/end/);
+  for(const lang of ['en','nl','de','fr','es']){
+    const r=runtime(lang);let requests=0;r.window.fetch=()=>{requests++;throw new Error('HTTP control forbidden');};
+    r.window.dispatchEvent({type:'djconnect-handoff',detail:{ha_url:'https://ha.test',session_id:'s',broadcast_token:'t'.repeat(24),end_grant:'legacy-forged-grant'}});
+    const socket=r.sockets[0];r.frame(socket,snapshot('s',lang));
+    assert.equal(r.elements.has('end-session'),false);assert.equal(r.elements.get('title').textContent,'Track');
+    r.frame(socket,{type:'event',data:{session_id:'s',delivery_sequence:2,event_type:'runtime_ended',payload:{}}});
+    assert.equal(r.elements.get('moment').textContent,'');assert.equal(r.elements.get('artwork').hidden,true);assert.ok(socket.closed);assert.equal(requests,0);
+  }
 });
