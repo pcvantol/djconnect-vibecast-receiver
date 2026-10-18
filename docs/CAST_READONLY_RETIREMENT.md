@@ -74,3 +74,16 @@ Separate Finalization follows actual source/CI/Pages evidence. At preparation,
 new source delivery/Pages/Finalization are pending; owning#10 records execution
 identities only after they occur. A and B integration and physical/native
 acceptance remain open. The timer stays paused.
+
+## Actual source/publication evidence
+
+Source PR27 protected merged `954cce58fb6fe0a209a6ea1812bdad5a92c6a4d8`, tree
+`cd47d48676892f1dfe51f2c00b1e9af3ab755294` exactly equals the reviewed1f03371 tree.
+Required PR CI39086709418 and source-mainCI39086846662, projection39086846661 PASS.
+66Node/10Python/54real-engine browser tests pass;20new Cast cases retain modeled
+CAF/HA boundaries. Two exact independent reviews GO, with independent runtime
+and browser execution. Previewcd84aa35 and production4aa9e79d each passed new
+HTTPS/exact-byte/type/privacy checks. See the separate measured
+[Finalization record](qualification/2026-10-18-readonly-renderer-finalization.md)
+and [machine receipt](qualification/readonly-renderer-publication-2026-10-18.json).
+This supersedes pending source/publication wording above, not physical gates.
