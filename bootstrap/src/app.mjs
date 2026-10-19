@@ -1,3 +1,4 @@
+import {bindPageLifecycle} from './page-lifecycle.mjs';
 import {renderState, observeQRLayout} from './view.mjs';
 import { BootstrapController, unavailableAdapter } from './lifecycle.mjs';
 import { selectLocale } from './locales.mjs';
@@ -27,9 +28,7 @@ async function effects() {
 }
 byId('language').addEventListener('change',event => {language=selectLocale(event.target.value);paint();});
 byId('effects').addEventListener('click',() => {fewer=!fewer;byId('effects').setAttribute('aria-pressed',String(fewer));void effects();});
-byId('retry').addEventListener('click',() => {void (current.state==='recovering' ? controller.reconnect() : controller.start(supported()));});
+byId('retry').addEventListener('click',() => {void (current.state==='recovering' ? controller.reconnect() : controller.start(supported(),{explicit:true}));});
 for(const preference of [motion,contrast,transparency]) preference.addEventListener?.('change',effects);
-addEventListener('online',() => {if(current.state==='recovering') void controller.reconnect();});
-addEventListener('pagehide',() => controller.stop());
-addEventListener('pageshow',event => {if(event.persisted) void controller.start(supported());});
+bindPageLifecycle(controller);
 paint();void effects();void controller.start(supported());

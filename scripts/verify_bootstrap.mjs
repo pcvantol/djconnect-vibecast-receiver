@@ -1,3 +1,4 @@
+import {fileURLToPath} from 'node:url';
 import {readFile,readdir,lstat} from 'node:fs/promises';import {createHash} from 'node:crypto';import path from 'node:path';
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 export async function verify(directory,sourceSHA) {
@@ -11,4 +12,4 @@ export async function verify(directory,sourceSHA) {
  if(await readFile(path.join(directory,'SHA256SUMS'),'utf8')!==sums)throw Error('Checksum manifest mismatch');
  return manifest;
 }
-if(process.argv[1]===new URL(import.meta.url).pathname){await verify(process.argv[2],process.argv[3]);process.stdout.write('Artifact verification PASS\n');}
+if(path.resolve(process.argv[1]||'')===fileURLToPath(import.meta.url)){await verify(process.argv[2],process.argv[3]);process.stdout.write('Artifact verification PASS\n');}

@@ -7,7 +7,7 @@ export function renderState(document, language, current) {
  byId('steps').setAttribute('aria-label',copy.step1+'; '+copy.step2);
  byId('language-label').textContent = copy.language; byId('state-label').textContent = copy.stateLabel;
  byId('state-title').textContent = copy[current.state][0]; byId('state-description').textContent = copy[current.state][1];
- byId('retry').hidden = !['unavailable','expired','recovering','unknown','unsafe'].includes(current.state);
+ byId('retry').hidden = current.retryAllowed===false || !['unavailable','expired','recovering','unknown','unsafe'].includes(current.state);
  const visible = ['waiting','confirming'].includes(current.state) && !!current.challenge;
  byId('qr-panel').hidden = !visible;
  const canvas = byId('qr'), ctx = canvas.getContext('2d');
