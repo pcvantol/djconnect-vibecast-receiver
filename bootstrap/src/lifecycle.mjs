@@ -3,22 +3,28 @@
 // challenges and destinations. Production currently imports unavailableAdapter.
 export const unavailableAdapter = Object.freeze({ contract: null });
 export class BootstrapController {
-  constructor({ adapter = unavailableAdapter, render, navigate, now = Date.now,
+  constructor({ adapter = unavailableAdapter, adapterFactory = null, render, navigate, now = Date.now,
     monotonic = () => performance.now(), schedule = (fn, delay) => setTimeout(fn, delay), cancel = id => clearTimeout(id) }) {
-    Object.assign(this, { adapter, render, navigate, now, monotonic, schedule, cancel });
-    this.generation = 0; this.timer = null; this.abort = null; this.challenge = null;
+    Object.assign(this, { adapter, adapterFactory, render, navigate, now, monotonic, schedule, cancel });
+    this.started = false; this.generation = 0; this.timer = null; this.abort = null; this.challenge = null;
     this.monotonicDeadline = 0; this.consumed = false; this.state = 'initializing';
   }
-  show(state, details = {}) { this.state = state; this.render({ state, ...details }); }
+  show(state, details = {}) { this.state = state; this.render({ state, ...details, ...(this.adapter.bounded ? {retryAllowed:!!this.adapterFactory&&this.adapter.canRestart?.()===true} : {}) }); }
   invalidate() {
+    if (this.adapter.bounded && this.started) this.adapter.stop?.();
     this.generation++; this.abort?.abort(); this.abort = null;
     this.cancel(this.timer); this.timer = null; this.challenge = null;
   }
-  async start(supported = true) {
+  async start(supported = true, {explicit = false} = {}) {
+    if (this.adapter.bounded && this.started) {
+      if (!explicit || !this.adapterFactory || !this.adapter.canRestart?.()) return this.fail('unavailable');
+      this.invalidate();this.adapter=this.adapterFactory();this.started=false;
+    }
     this.invalidate(); this.consumed = false;
     if (!supported) return this.show('unsupported');
     if (!this.adapter.contract) return this.show('unavailable');
     if (!['create', 'wait', 'validateChallenge', 'verifyDestination', 'allowsDestination'].every(k => typeof this.adapter[k] === 'function')) return this.show('unknown');
+    this.started = true;
     const generation = this.generation;
     this.abort = new AbortController();
     this.show('creating');
@@ -27,12 +33,13 @@ export class BootstrapController {
       if (generation !== this.generation) return;
       if (!this.adapter.validateChallenge(challenge) || !Number.isFinite(challenge?.expiresAt) || challenge.expiresAt <= this.now() || !validMatrix(challenge.matrix)) return this.fail('unknown');
       // Preserve the original deadline: reconnect never creates or renews it.
-      this.challenge = Object.freeze({ ...challenge, expiresAt: challenge.expiresAt });
+      this.challenge = this.adapter.bounded ? challenge : Object.freeze({ ...challenge, expiresAt: challenge.expiresAt });
       this.monotonicDeadline = this.monotonic() + challenge.expiresAt - this.now();
       if (!this.armDeadline(generation)) return;
+      this.adapter.expose?.(this.challenge); // sticky before any renderer callback
       this.show('waiting', { challenge: this.challenge });
       await this.receive(generation);
-    } catch { if (generation === this.generation) this.show('recovering'); }
+    } catch (error) { if (generation === this.generation) { if (this.adapter.bounded) this.fail(['expired','unsafe'].includes(error.state)?error.state:'unavailable'); else this.show('recovering'); } }
   }
   armDeadline(generation) {
     if (generation !== this.generation || !this.challenge) return false;
@@ -66,7 +73,7 @@ export class BootstrapController {
       this.cancel(this.timer); this.abort?.abort();
       this.challenge = null; this.generation++;
       this.show('redirecting'); this.navigate(url.href);
-    } catch { if (this.current(generation)) this.show('recovering', { challenge }); }
+    } catch (error) { if (this.current(generation)) { if (this.adapter.bounded) this.fail(['expired','unsafe'].includes(error.state)?error.state:'unavailable'); else this.show('recovering', { challenge }); } }
   }
   current(generation) {
     if (generation !== this.generation || this.consumed || !this.challenge) return false;
@@ -74,6 +81,7 @@ export class BootstrapController {
     return true;
   }
   async reconnect() {
+    if (this.adapter.bounded) return this.fail('unavailable');
     if (!this.challenge) return this.start();
     const generation = this.generation;
     if (!this.current(generation)) return;

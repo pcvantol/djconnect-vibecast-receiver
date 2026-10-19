@@ -2,6 +2,8 @@ import {readFile,writeFile,mkdir,readdir,rm} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 import {execFileSync} from 'node:child_process';
 import path from 'node:path';
+import {fileURLToPath} from 'node:url';
+import {build as bundle} from 'esbuild';
 export const designPin='f32b625eb0a3d1b8abfc2c81378d25d769c6766d';
 export async function build(output='dist/bootstrap', sourceSHA=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim()) {
  if(!/^[a-f0-9]{40}$/.test(sourceSHA)) throw new Error('Exact source SHA required');
@@ -11,7 +13,7 @@ export async function build(output='dist/bootstrap', sourceSHA=execFileSync('git
  for(const directory of ['bootstrap/public','bootstrap/src']) {
   for(const file of (await readdir(directory)).sort()) {
    if(Object.hasOwn(files,file)) throw new Error('Duplicate output');
-   const bytes=await readFile(path.join(directory,file));
+   const bytes=file==='rendezvous.mjs' ? Buffer.from((await bundle({entryPoints:[path.join(directory,file)],bundle:true,format:'esm',platform:'browser',target:'es2022',write:false,legalComments:'inline'})).outputFiles[0].contents) : await readFile(path.join(directory,file));
    await writeFile(path.join(output,file),bytes);
    files[file]=createHash('sha256').update(bytes).digest('hex');
   }
@@ -23,4 +25,4 @@ export async function build(output='dist/bootstrap', sourceSHA=execFileSync('git
  await writeFile(path.join(output,'SHA256SUMS'),Object.entries(hashes).sort().map(([f,h])=>`${h}  ${f}\n`).join(''));
  return manifest;
 }
-if(process.argv[1]===new URL(import.meta.url).pathname) await build(process.argv[2]);
+if(path.resolve(process.argv[1]||'')===fileURLToPath(import.meta.url)) await build(process.argv[2]);

@@ -6,6 +6,18 @@ Finalization1183/main **f32b625eb0a3d1b8abfc2c81378d25d769c6766d**;
 [terminal handoff](https://github.com/pcvantol/djconnect-vibecast-receiver/issues/16#issuecomment-6202423207).
 Canonical [distribution/trust decisions](https://github.com/pcvantol/djconnect/blob/f32b625eb0a3d1b8abfc2c81378d25d769c6766d/docs/product/VIBECAST_WEB_ENTRY_DISTRIBUTION_V1.md).
 
+## Implementation-contract continuation — 2026-10-19
+
+API protected source2dade83 plus separate Finalization661e5770 and explicit
+producerreceipts6272409413/6272559764 now release implementation.1 only. The
+[consumer adapter](RENDEZVOUS_ADAPTER.md) and exact offline contract pins are
+implemented on the existing receiver writer. Candidate review/delivery status
+belongs in owning10; neither source release nor synthetic browser acceptance
+qualifies a live service. Production entry remains unavailableAdapter and
+connect-src none. No public configuration/activation, bootstrap promotion or
+HA/native/physical acceptance is inferred. Historical statements below about
+missing source contracts are superseded only for this bounded implementation.
+
 ## Source and runtime boundary
 
 `bootstrap/src` and `bootstrap/public` build to **dist/bootstrap**, never wwwroot.
