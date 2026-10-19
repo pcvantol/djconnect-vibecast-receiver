@@ -69,7 +69,7 @@ test('fresh explicit controller interaction only after authenticated terminal st
 });
 test('timed-out poll is aborted before another client request; late result is fenced',async()=>{
  const s=service();let clock=0,first=true,signal;const transport=async(url,options)=>{if(url.endsWith('/poll')&&first){first=false;signal=options.signal;return new Promise(()=>{});}if(url.endsWith('/poll'))assert.equal(signal.aborted,true);return s.transport(url,options);};
- const a=createRendezvousAdapter({fetch:transport,visible:()=>true,monotonic:()=>clock,schedule:(fn,ms)=>setTimeout(()=>{clock+=ms;fn();},ms===2000||ms===10000?1:ms)});const c=await a.create();a.expose(c);const e=await a.wait({challenge:c});assert.ok(e);assert.equal(signal.aborted,true);a.stop();
+ const a=createRendezvousAdapter({fetch:transport,visible:()=>true,monotonic:()=>clock,schedule:(fn,ms)=>setTimeout(()=>{clock+=ms;fn();},ms===2000||(ms===10000&&signal&&!signal.aborted)?1:ms)});const c=await a.create();a.expose(c);const e=await a.wait({challenge:c});assert.ok(e);assert.equal(signal.aborted,true);a.stop();
 });
 test('late old committed create response cannot replace exposed fresh generation',async()=>{
  const s=service(),gate=later();let clock=0,deadline=0,old;

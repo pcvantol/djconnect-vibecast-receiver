@@ -63,7 +63,7 @@ may redeploy unchanged Cast bytes through its existing Git-connected Pages route
 BrandV2 receiver29 is separately selected but awaits protected Core1224 acceptance;
 no candidate branding or renderer fragment is mixed into this adapter import.
 
-Local validation before final review: 87 Node / 10 Python tests PASS; 78 actual
+Local validation before final review: 87 Node / 10 Python tests PASS (final successful exit); 78 actual
 Chromium/WebKit cases PASS (24 new adoption cases, 54 existing regressions).
 The first expanded JWE-negative run had86 PASS/1 FAIL: padded tag was rejected
 by the closed consume-response schema before the test's expected decrypt stage.
@@ -72,3 +72,9 @@ validation was not relaxed. Initial browser startup also exposed the path-space
 CLI bug, then the sandbox's loopback listen restriction; the corrected CLI and
 approved loopback run produced the actual browser result. These failed attempts
 are not relabeled as successful runs.
+
+A second expanded run exposed a controlled-time fixture error: the hung-poll
+scheduler also accelerated the create deadline. It now accelerates10s only while
+the selected hung poll signal is active; production deadlines are unchanged.
+The final run exited0 with87 Node and10 Python tests PASS; earlier failures stay
+recorded above, and no runtime predicate was relaxed.
