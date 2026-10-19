@@ -1,0 +1,26 @@
+{
+  "schema": 1,
+  "producer": "pcvantol/djconnect",
+  "sourceSHA": "7e14e5970b3f68d33d243ae6bab2b281fad59bb2",
+  "finalizationSHA": "baac22d771bf3141404001517f62a5e34f8c8644",
+  "sourceTree": "7f497d70bbddc2b017b2298d06ce694df45f3b7e",
+  "manifest": "docs/brand-v2/core-manifest.json",
+  "manifestSHA256": "73cc408e10d88aa1fb8a1be2783b9c577aec398ce3dcd54c2f997ad1425984d2",
+  "ingestion": "exact protected source GitHub blobs; manifest hashes verified",
+  "protectedArchive": {
+    "sha256": "025202e82a9a9e4c7c4859bb03fdebd1287d817abe5c6b3dce1380b690b4d1f6",
+    "downloadStatus": "NOT_AVAILABLE_404; not claimed downloaded"
+  },
+  "assets": {
+    "bootstrap/public/brand-mark-16.png": "assets/djconnect/brand-v2/mark-16.png",
+    "bootstrap/public/brand-mark-32.png": "assets/djconnect/brand-v2/mark-32.png",
+    "bootstrap/public/brand-mark-40.png": "assets/djconnect/brand-v2/mark-40.png",
+    "bootstrap/public/brand-mark-128.png": "assets/djconnect/brand-v2/mark-128.png",
+    "docs/brand-v2/wordmark-primary-light.png": "assets/djconnect/brand-v2/wordmark-primary-light.png",
+    "docs/brand-v2/wordmark-primary-dark.png": "assets/djconnect/brand-v2/wordmark-primary-dark.png",
+    "docs/brand-v2/wordmark-compact-light.png": "assets/djconnect/brand-v2/wordmark-compact-light.png",
+    "docs/brand-v2/wordmark-compact-dark.png": "assets/djconnect/brand-v2/wordmark-compact-dark.png"
+  },
+  "renderer": "NOT_IMPORTED; full independently pinned build required",
+  "socialPreview": "NOT_SUPPLIED; settings unchanged"
+}

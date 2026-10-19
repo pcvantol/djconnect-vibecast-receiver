@@ -1,3 +1,16 @@
+# Current Brand V2 receiver adoption — 2026-10-19
+
+Same sole writer, branchcodex/vibecast-brand-v2, based on protected main4e3c5169.
+Owner requested the Apple-connect-inspired VibeCast hero plus DJConnect mark.
+[Adoption scope and evidence](docs/BRAND_V2_ADOPTION.md) bind accepted Core asset
+source7e14e597 plus separate Finalizationbaac22d7, exact protected blob ingestion
+and manifest. New header/footer/favicons and README themes are receiving source;
+source review/CI/protected delivery/publication remain pending. No Cast import,
+producer write, rendezvous activation or GitHub social setting. Timer OFF.
+Background delivery PR32/33 is actually finalized via owning10/6275896649.
+
+---
+
 # Current background update — 2026-10-19
 
 Peter selected the logo blue/purple/cyan palette for the site background.
