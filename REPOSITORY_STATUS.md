@@ -4,7 +4,10 @@ Peter selected the logo blue/purple/cyan palette for the site background.
 Sole writer, branch `codex/vibecast-logo-background`, based on protected main0cbc5a3e.
 [Background and bounded live-update route](docs/BOOTSTRAP_BACKGROUND_UPDATE.md)
 records local tests, full artifact delta and exact prior production/recovery fence.
-Source review/protected merge/publication are pending. No Core asset import,
+PR32 protected delivered0097f8d2; update39312997951 SUCCESS, production17bf0173.
+[Separate Finalization preparation](docs/qualification/2026-10-19-bootstrap-background-finalization.md)
+records actual full HTTPS/hash/header/404 and live-browser PASS; own final-main
+reconciliation is pending. No Core asset import,
 service activation, DNS change or timer. Adapter source Finalization is actually
 delivered via PR31/0cbc5a3e and terminal owning10/6274796816/Core1101/6274797779.
 
