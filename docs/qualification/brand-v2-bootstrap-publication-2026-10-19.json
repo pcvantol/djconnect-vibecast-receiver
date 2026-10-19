@@ -100,7 +100,132 @@
       1100
     ],
     "result": "PASS",
-    "scope": "actual public GitHub rendered README; no social setting mutation"
+    "scope": "actual public GitHub rendered README; no social setting mutation",
+    "receipt": "artifacts/github-brand-main-visible/receipt.json",
+    "positiveRenderedSizeRequired": true,
+    "renderedSizes": {
+      "390": {
+        "width": 324,
+        "height": 84
+      },
+      "1100": {
+        "width": 512,
+        "height": 128
+      }
+    },
+    "verifiedCases": [
+      {
+        "engine": "chromium",
+        "theme": "light",
+        "width": 390,
+        "metrics": {
+          "src": "https://github.com/pcvantol/djconnect-vibecast-receiver/raw/main/docs/brand-v2/wordmark-compact-light.png",
+          "naturalWidth": 1728,
+          "naturalHeight": 448,
+          "width": 324,
+          "height": 84,
+          "complete": true
+        }
+      },
+      {
+        "engine": "chromium",
+        "theme": "light",
+        "width": 1100,
+        "metrics": {
+          "src": "https://github.com/pcvantol/djconnect-vibecast-receiver/raw/main/docs/brand-v2/wordmark-primary-light.png",
+          "naturalWidth": 2048,
+          "naturalHeight": 512,
+          "width": 512,
+          "height": 128,
+          "complete": true
+        }
+      },
+      {
+        "engine": "chromium",
+        "theme": "dark",
+        "width": 390,
+        "metrics": {
+          "src": "https://github.com/pcvantol/djconnect-vibecast-receiver/raw/main/docs/brand-v2/wordmark-compact-dark.png",
+          "naturalWidth": 1728,
+          "naturalHeight": 448,
+          "width": 324,
+          "height": 84,
+          "complete": true
+        }
+      },
+      {
+        "engine": "chromium",
+        "theme": "dark",
+        "width": 1100,
+        "metrics": {
+          "src": "https://github.com/pcvantol/djconnect-vibecast-receiver/raw/main/docs/brand-v2/wordmark-primary-dark.png",
+          "naturalWidth": 2048,
+          "naturalHeight": 512,
+          "width": 512,
+          "height": 128,
+          "complete": true
+        }
+      },
+      {
+        "engine": "webkit",
+        "theme": "light",
+        "width": 390,
+        "metrics": {
+          "src": "https://github.com/pcvantol/djconnect-vibecast-receiver/raw/main/docs/brand-v2/wordmark-compact-light.png",
+          "naturalWidth": 1728,
+          "naturalHeight": 448,
+          "width": 324,
+          "height": 84,
+          "complete": true
+        }
+      },
+      {
+        "engine": "webkit",
+        "theme": "light",
+        "width": 1100,
+        "metrics": {
+          "src": "https://github.com/pcvantol/djconnect-vibecast-receiver/raw/main/docs/brand-v2/wordmark-primary-light.png",
+          "naturalWidth": 2048,
+          "naturalHeight": 512,
+          "width": 512,
+          "height": 128,
+          "complete": true
+        }
+      },
+      {
+        "engine": "webkit",
+        "theme": "dark",
+        "width": 390,
+        "metrics": {
+          "src": "https://github.com/pcvantol/djconnect-vibecast-receiver/raw/main/docs/brand-v2/wordmark-compact-dark.png",
+          "naturalWidth": 1728,
+          "naturalHeight": 448,
+          "width": 324,
+          "height": 84,
+          "complete": true
+        }
+      },
+      {
+        "engine": "webkit",
+        "theme": "dark",
+        "width": 1100,
+        "metrics": {
+          "src": "https://github.com/pcvantol/djconnect-vibecast-receiver/raw/main/docs/brand-v2/wordmark-primary-dark.png",
+          "naturalWidth": 2048,
+          "naturalHeight": 512,
+          "width": 512,
+          "height": 128,
+          "complete": true
+        }
+      }
+    ],
+    "initialEvidenceCorrection": {
+      "candidate": "071e8ca50fd5a617980048ae9d9084273ebe96d9",
+      "reviews": "TWO_NO_GO_P2",
+      "retainedReceipt": "artifacts/github-brand-main/receipt.json",
+      "finding": "WebKit/light/390 decoded with correct source and natural dimensions but measured rendered width/height zero; original receipt does not prove all eight visible sizes",
+      "resolution": "Fresh actual GitHub MAIN run waits for visible image and layout, then requires positive rendered width/height, correct currentSrc, natural dimensions and aspect ratio; all eight pass. No product-source change."
+    }
   },
   "rollback": {
     "actual": "NOT_REQUIRED_NOT_RUN",

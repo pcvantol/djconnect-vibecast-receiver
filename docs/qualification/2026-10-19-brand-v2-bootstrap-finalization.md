@@ -42,7 +42,14 @@ is NOT established by page screenshots or img.decode.
 Header/favicons use canonical headset16/32/40; footer glass128 renders64CSSpx.
 README exact primary/compact light/dark PNGs use512px threshold. Eight real public
 GitHub MAIN UI cases PASS across Chromium/WebKit, light/dark and390/1100 widths;
-correct original image natural dimensions/currentSrc, decoding and size verified.
+correct original image natural dimensions/currentSrc, decoding and positive rendered
+size verified: compact324x84 and primary512x128. Fresh receipt
+`artifacts/github-brand-main-visible/receipt.json` records all eight measurements.
+Initial docs candidate071e8ca received two independent P2 NO_GO reviews: old
+`artifacts/github-brand-main/receipt.json` had WebKit/light/390 decoded but
+rendered0x0, so could not establish all eight visible sizes. That receipt is
+retained; the fresh run waits for visible layout and requires width/height>0
+and correct aspect ratio. No product-source change was needed.
 Parent inspected actual GitHub compact-dark output. No GitHub social setting
 was applied, no replacement social image invented. All5locale/supporting states,
 public unavailableAdapter/CSPnone/no storage and separate HA admission retained.
