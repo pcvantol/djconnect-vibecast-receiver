@@ -1,11 +1,13 @@
 # Current receiver implementation — 2026-10-19
 
 Same sole writer in `/Volumes/Shared Data/GitHub/djconnect-vibecast-receiver`,
-branch `codex/vibecast-rendezvous-adapter-v1`, based on protected mainf925c7fd.
+branch `codex/vibecast-rendezvous-finalization`, based on protected source main39844ebf.
 API implementation.1 source2dade83 plus separate Finalization661e5770 and exact
 producerreceipts6272409413/6272559764 now release implementation pickup.
 See [adapter source, validation and remaining gates](docs/RENDEZVOUS_ADAPTER.md).
-Source candidate/review/CI/protected delivery are in progress; not yet delivered.
+Source PR30 protected delivered39844ebf with exact reviewed-tree equality; PR checks PASS.
+Separate [Finalization preparation](docs/qualification/2026-10-19-rendezvous-adapter-finalization.md)
+records evidence and pending final-main reconciliation, never live activation.
 Public app remains unavailable, no qualified service, no bootstrap deployment.
 Brand V2 receiver29 is also selected by Peter; Core1224 remains a review candidate,
 so only read-only asset preflight proceeds pending protected producer acceptance.
