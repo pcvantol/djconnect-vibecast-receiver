@@ -1,3 +1,10 @@
+<picture>
+  <source media="(max-width: 511px) and (prefers-color-scheme: dark)" srcset="docs/brand-v2/wordmark-compact-dark.png">
+  <source media="(max-width: 511px)" srcset="docs/brand-v2/wordmark-compact-light.png">
+  <source media="(prefers-color-scheme: dark)" srcset="docs/brand-v2/wordmark-primary-dark.png">
+  <img src="docs/brand-v2/wordmark-primary-light.png" width="512" alt="DJConnect — Your music. Your DJ.">
+</picture>
+
 # DJConnect VibeCast Receiver
 
 Central VibeCast.tv bootstrap and independently pinned Google Cast receiver distribution.
