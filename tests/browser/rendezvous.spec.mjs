@@ -7,7 +7,7 @@ import jsQR from 'jsqr';
 const WIRE='djc-rendezvous/1',SERVICE='https://api.djconnect.dev',ORIGIN='https://vibecast.tv';
 const text=new TextEncoder();
 function scan(matrix){const scale=4,n=(matrix.length+8)*scale,rgba=new Uint8ClampedArray(n*n*4).fill(255);for(let y=0;y<n;y++)for(let x=0;x<n;x++){const r=Math.floor(y/scale)-4,c=Math.floor(x/scale)-4;if(matrix[r]?.[c]){const i=(y*n+x)*4;rgba[i]=rgba[i+1]=rgba[i+2]=0;}}return jsQR(rgba,n,n)?.data;}
-async function fixture(page,{lostCreate=0,deny=0,loseConsume=false}={}){
+async function fixture(page,{lostCreate=0,deny=0,loseConsume=false,longBackoff=false}={}){
  const calls=[],keys=[];let current,state='pending',envelope,createCount=0;
  const html=(await readFile('bootstrap/public/index.html','utf8')).replace('<script type="module" src="/app.mjs"></script>','');
  await page.route('**/adapter-fixture',route=>route.fulfill({status:200,contentType:'text/html',body:html}));
@@ -22,7 +22,7 @@ async function fixture(page,{lostCreate=0,deny=0,loseConsume=false}={}){
    envelope=await new CompactEncrypt(text.encode(JSON.stringify(plain))).setProtectedHeader({alg:'RSA-OAEP-256',enc:'A256GCM',typ:'djc-rendezvous-destination+jwe',kid:thumb}).encrypt(await importJWK(body.browser_public_key,'RSA-OAEP-256'));
    return respond({v:WIRE,transaction_id:current.transaction_id,generation:current.generation,created_at:created,expires_at:current.expires_at,browser_key_thumbprint:thumb,qr_payload:current},201);
   }
-  if(name==='poll'){if(state==='pending')state='ready';return respond({v:WIRE,state,expires_at:current.expires_at,retry_after_ms:2000});}
+  if(name==='poll'){if(longBackoff)return respond({v:WIRE,state:'pending',expires_at:current.expires_at,retry_after_ms:120000});if(state==='pending')state='ready';return respond({v:WIRE,state,expires_at:current.expires_at,retry_after_ms:2000});}
   if(name==='consume'){state='consumed';if(loseConsume)return route.abort('failed');return respond({v:WIRE,state,destination_envelope:envelope,expires_at:current.expires_at});}
   throw Error('unexpected test route');
  });
@@ -30,17 +30,17 @@ async function fixture(page,{lostCreate=0,deny=0,loseConsume=false}={}){
  await page.evaluate(()=>{window.fixtureStates=[];window.fixtureUrls=[];});
  return {calls,keys,get qr(){return current;}};
 }
-async function run(page,{language='nl',accelerate=false}={}){
- await page.evaluate(async({language,accelerate})=>{
+async function run(page,{language='nl',accelerate=false,holdLong=false}={}){
+ await page.evaluate(async({language,accelerate,holdLong})=>{
   const {createRendezvousAdapter}=await import('/rendezvous.mjs'),{BootstrapController}=await import('/lifecycle.mjs'),{renderState}=await import('/view.mjs');
-  let offset=0;const options={visible:()=>document.visibilityState==='visible',...(accelerate?{monotonic:()=>performance.now()+offset,schedule:(fn,ms)=>ms===2000?setTimeout(()=>{offset+=ms;fn();},10):setTimeout(fn,ms)}:{})};
+  let offset=0;const options={visible:()=>document.visibilityState==='visible',...(accelerate?{monotonic:()=>performance.now()+offset,schedule:(fn,ms)=>{if(holdLong&&ms>100000){window.fixtureLongWake=()=>{offset+=ms;fn();};return -1;}return ms===2000?setTimeout(()=>{offset+=ms;fn();},10):setTimeout(fn,ms);}}:{})};
   window.fixtureOptions=options;window.fixtureFactory=()=>createRendezvousAdapter(options);
   window.fixtureAdapter=window.fixtureFactory();
   window.fixtureController=new BootstrapController({adapter:window.fixtureAdapter,adapterFactory:window.fixtureFactory,render:s=>{window.fixtureStates.push(s.state);if(s.challenge)window.fixtureMatrix=s.challenge.matrix;renderState(document,language,s);},navigate:u=>window.fixtureUrls.push(u)});
   const {bindPageLifecycle}=await import('/page-lifecycle.mjs');bindPageLifecycle(window.fixtureController);
   document.querySelector('#retry').addEventListener('click',()=>{window.fixtureWork=window.fixtureController.start(true,{explicit:true});});
   window.fixtureWork=window.fixtureController.start();
- },{language,accelerate});
+ },{language,accelerate,holdLong});
 }
 test('real fetch and standard browser crypto -> independently decoded QR -> exactly one handoff',async({page})=>{
  const f=await fixture(page);await run(page);await expect(page.locator('html')).toHaveAttribute('data-state','waiting');const matrix=await page.evaluate(()=>window.fixtureMatrix);expect(JSON.parse(scan(matrix))).toEqual(f.qr);
@@ -67,3 +67,4 @@ test('late create response after pagehide is fenced before QR rendering',async({
  window.fixtureController=new BootstrapController({adapter:a,render:s=>window.fixtureStates.push(s.state),navigate:u=>window.fixtureUrls.push(u)});bindPageLifecycle(window.fixtureController);window.fixtureWork=window.fixtureController.start();});
  await expect.poll(()=>page.evaluate(()=>typeof window.fixtureReleaseResponse)).toBe('function');await page.evaluate(async()=>{dispatchEvent(new PageTransitionEvent('pagehide',{persisted:true}));window.fixtureReleaseResponse();await window.fixtureWork;dispatchEvent(new PageTransitionEvent('pageshow',{persisted:true}));});expect(f.calls.filter(x=>x.name==='create')).toHaveLength(1);expect(await page.evaluate(()=>window.fixtureStates.includes('waiting'))).toBe(false);expect(await page.evaluate(()=>window.fixtureUrls.length)).toBe(0);
 });
+test('controlled long backoff keeps invitation waiting until original expiry, then exposes safe retry',async({page})=>{const f=await fixture(page,{longBackoff:true});await run(page,{accelerate:true,holdLong:true});await expect.poll(()=>page.evaluate(()=>typeof window.fixtureLongWake)).toBe('function');await expect(page.locator('html')).toHaveAttribute('data-state','waiting');await expect(page.locator('#retry')).toBeHidden();expect(f.calls.filter(x=>x.name==='create')).toHaveLength(1);await page.evaluate(async()=>{window.fixtureLongWake();await window.fixtureWork;});await expect(page.locator('html')).toHaveAttribute('data-state','expired');await expect(page.locator('#retry')).toBeVisible();expect(f.calls.filter(x=>x.name==='create')).toHaveLength(1);});

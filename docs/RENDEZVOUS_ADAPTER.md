@@ -63,8 +63,8 @@ may redeploy unchanged Cast bytes through its existing Git-connected Pages route
 BrandV2 receiver29 is separately selected but awaits protected Core1224 acceptance;
 no candidate branding or renderer fragment is mixed into this adapter import.
 
-Local validation before final review: 87 Node / 10 Python tests PASS (final successful exit); 78 actual
-Chromium/WebKit cases PASS (24 new adoption cases, 54 existing regressions).
+Local validation before final review: 88 Node / 10 Python tests PASS (final successful exit); 80 actual
+Chromium/WebKit cases PASS (26 new adoption cases, 54 existing regressions).
 The first expanded JWE-negative run had86 PASS/1 FAIL: padded tag was rejected
 by the closed consume-response schema before the test's expected decrypt stage.
 The test now asserts that earlier rejection at the correct boundary; runtime
@@ -78,3 +78,11 @@ scheduler also accelerated the create deadline. It now accelerates10s only while
 the selected hung poll signal is active; production deadlines are unchanged.
 The final run exited0 with87 Node and10 Python tests PASS; earlier failures stay
 recorded above, and no runtime predicate was relaxed.
+
+Final UX review additionally found premature expiry when a server backoff exceeded
+remaining lifetime. Source now waits without requests until the original expiry,
+then exposes safe explicit retry. The integrated controlled-clock regression
+also caught an initial scheduling overshoot; both target and actual scheduled
+wait are now clamped. Node+actual DOM/view browser regressions cover this boundary.
+Prior technical GO on2df797a is historical; both reviewers must bind the new exact
+candidate after this source correction. No review is carried across by inference.

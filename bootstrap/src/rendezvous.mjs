@@ -40,7 +40,7 @@ export function createRendezvousAdapter({fetch:transport=globalThis.fetch,crypto
   }
   schema(route+'_response',data);if(route!=='cancel')need(data.expires_at===c.expires);return data;
  }
- async function pause(c,ms){live(c);need(Number.isFinite(ms)&&ms>=2000);if(ms>=Math.min(c.expires-now(),c.monoExpires-mono()))throw new Terminal('expired');let timer,stop;const deadline=mono()+ms;try{await new Promise((resolve,reject)=>{stop=()=>reject(new Stopped());waiters.add(stop);const wake=()=>{try{const remaining=deadline-mono();if(remaining>0)timer=schedule(wake,remaining);else resolve();}catch(e){reject(e);}};timer=schedule(wake,ms);});}finally{cancel(timer);waiters.delete(stop);}live(c);}
+ async function pause(c,ms){live(c);need(Number.isFinite(ms)&&ms>=2000);const remaining=Math.min(c.expires-now(),c.monoExpires-mono());let timer,stop;const deadline=mono()+Math.min(ms,remaining);try{await new Promise((resolve,reject)=>{stop=()=>reject(new Stopped());waiters.add(stop);const wake=()=>{try{const remaining=deadline-mono();if(remaining>0)timer=schedule(wake,remaining);else resolve();}catch(e){reject(e);}};timer=schedule(wake,Math.min(ms,remaining));});}finally{cancel(timer);waiters.delete(stop);}live(c);}
  function matrix(payload){const qr=qrcode(0,'M');qr.addData(payload,'Byte');qr.make();const n=qr.getModuleCount();return Array.from({length:n},(_,y)=>Array.from({length:n},(_,x)=>qr.isDark(y,x)));}
  async function attempt(generation,prepared,start,ticket){
   const {keypair,claim,jwk,thumb,commitment}=prepared;
