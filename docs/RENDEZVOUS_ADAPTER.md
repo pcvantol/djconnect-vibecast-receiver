@@ -62,3 +62,13 @@ INITIAL_BINDING_ONLY cannot overwrite the already live root. Branch/main pushes
 may redeploy unchanged Cast bytes through its existing Git-connected Pages route.
 BrandV2 receiver29 is separately selected but awaits protected Core1224 acceptance;
 no candidate branding or renderer fragment is mixed into this adapter import.
+
+Local validation before final review: 87 Node / 10 Python tests PASS; 78 actual
+Chromium/WebKit cases PASS (24 new adoption cases, 54 existing regressions).
+The first expanded JWE-negative run had86 PASS/1 FAIL: padded tag was rejected
+by the closed consume-response schema before the test's expected decrypt stage.
+The test now asserts that earlier rejection at the correct boundary; runtime
+validation was not relaxed. Initial browser startup also exposed the path-space
+CLI bug, then the sandbox's loopback listen restriction; the corrected CLI and
+approved loopback run produced the actual browser result. These failed attempts
+are not relabeled as successful runs.
