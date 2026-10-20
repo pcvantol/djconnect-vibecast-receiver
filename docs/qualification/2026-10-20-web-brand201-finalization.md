@@ -19,7 +19,8 @@ headers, API379 and Cast1.1.3 remain unchanged. No fakeQR or livepairing invente
 Local99Node/11Python/102browser and2actualAPI379HTTP/UI PASS. Sixteen actual
 source previews cover Chromium/WebKit, mobile/TV, normal/contrast/forcedlight/dark;
 four actualliveHTTPSbrowser cases390/1920 PASS, no pageerrors/externalrequests,
-correctselectedwordmarkintrinsicwidth/aspect/minimumwidth and honest unavailableUI.
+correctselectedwordmark/minimumwidth and honest unavailableUI. Source browser
+cases additionally measure the intrinsicdimensions and rendered aspectratio.
 Source and live desktop/mobile screenshots independently inspected.
 
 PRCI39448189899 attempt1 failed beforebrowsers on an externalMicrosoft apt403;
