@@ -80,7 +80,10 @@ will be reconciled in owning10 after they occur; none is asserted prospectively.
 
 Local development validation:99Node/10Python PASS and two-engine HTTP/UI PASS after
 the initial missing imported wire-schema inventory was corrected. Earlier failed
-inventories were not counted as PASS. Ordinary84browser regression and candidate/
+inventories were not counted as PASS. Exact candidate ef1b068 received a technical
+P2 NO_GO: the new negative test assumed the macOS temporary path was already
+canonical. Its test base now uses realpath(tmpdir()); runtime symlink rejection
+is unchanged. The corrected test passed with TMPDIR=/tmp as an alias regression. Ordinary84browser regression and candidate/
 main CI remain separate measured checks. No unchanged test reruns imply new effects.
 
 Core's protected8b221d07 B contract and its actual isolated12HAHTTP/WSS-group probe

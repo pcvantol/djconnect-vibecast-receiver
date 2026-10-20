@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {mkdtemp,writeFile,mkdir,symlink,rm,readFile} from 'node:fs/promises';import {tmpdir} from 'node:os';import path from 'node:path';
+import {mkdtemp,writeFile,mkdir,symlink,rm,readFile,realpath} from 'node:fs/promises';import {tmpdir} from 'node:os';import path from 'node:path';
 import {verifyAPISource,fixedTransportSource} from '../../qualification/http-ui/source-guard.mjs';
 const pin=JSON.parse(await readFile(new URL('../../qualification/http-ui/api-source.json',import.meta.url)));
 const base='http://127.0.0.1:12345/'+'a'.repeat(43)+'/v1/rendezvous/';
@@ -13,7 +13,7 @@ test('different API source/runtime pins fail before source loading',async()=>{
  await assert.rejects(verifyAPISource('/not-loaded',{...pin,runtime_sha256:'0'.repeat(64)}));
 });
 test('API source drift, path escape and symlink reject before importing runtime',async()=>{
- const dir=await mkdtemp(path.join(tmpdir(),'receiver-source-denial-'));
+ const dir=await mkdtemp(path.join(await realpath(tmpdir()),'receiver-source-denial-'));
  try{
   await mkdir(path.join(dir,'qualification/rendezvous'),{recursive:true});
   await writeFile(path.join(dir,pin.runtime),'throw Error("MUST_NOT_EXECUTE")');
