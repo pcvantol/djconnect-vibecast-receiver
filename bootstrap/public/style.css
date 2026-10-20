@@ -28,3 +28,8 @@ main{gap:4.5vw;padding-top:1.6rem;padding-bottom:1.6rem;align-items:center}
 @media(max-width:360px){.vibecast-hero{border-radius:1.6rem}.vibecast-hero h1{font-size:3rem}.vibecast-hero .eyebrow{font-size:.6rem}.maker{gap:.4rem;font-size:.8rem}}
 @media(prefers-contrast:more),(prefers-reduced-transparency:reduce){.vibecast-hero{background:#20283d;box-shadow:none;border:2px solid white}.hero-symbol{filter:none}}
 @media(forced-colors:active){.vibecast-hero{background:Canvas;border:2px solid CanvasText;box-shadow:none}.hero-symbol g{stroke:CanvasText}.hero-symbol circle{fill:CanvasText}.maker{color:CanvasText}}
+
+/* Exact outlined Core wordmark; its glass mark stays at64px+ on320px+ layouts. */
+footer .maker{display:block;width:384px;max-width:100%;flex:none}
+footer .maker img{display:block;width:100%;height:auto;object-fit:contain}
+@media(max-width:800px){footer{flex-direction:column;align-items:flex-start;gap:1rem}footer .maker{width:320px;max-width:100%}}

@@ -1,3 +1,23 @@
+# Current Brand2.0.1 web inputs — 2026-10-20
+
+Protected Core97a20fa17d60aa32cf92dc106707d70540ee479e / separate Finalization
+e390c5a81e2d2d272a46cc720c83cc4667c355c1 supply exact current manifest
+3fbdfe2a3ae326900a721c6bca1ebfd95c3f4a19d48c938efb86b0fad4cef56f.
+The complete74-file producer ZIP080ddbc078c320eab745c719dfb6f8cf77e1ae0448701578224e602fe84dcf8b
+was verified from the shared-machine protected handoff; all selected bytes equal
+both exact protected Git blobs and ZIP members. No claim of a new network ZIP download.
+Official16/32/40px headset exports replace only previous small marks; largeglass
+and all outlined Inter wordmarks remain byte-identical. OFL/provenance retained.
+
+Public footer now uses the actual canonical primary-dark PNG wordmark including
+its tagline, no retyped approximation or regenerated artwork. Its full2048x512
+canvas is rendered at256px+ total width on qualified320px+ layouts, keeping the
+embedded glass mark at64px+. Header and favicon use proper smallsize exports.
+Exact input map/verifier remain bootstrap/brand-assets.json/scripts/verify_brand.mjs.
+Historical source receipts below remain historical, not current-source assertions.
+
+---
+
 # Receiver Brand V2 inputs
 
 Exact protected Core asset producer source7e14e5970b3f68d33d243ae6bab2b281fad59bb2,
