@@ -6,9 +6,9 @@ root runtime27e9f5ae. This increment adds only pinned qualification source and C
 production app/unavailableAdapter, CSP, service/wire pins and Cast import stay intact.
 [Qualification scope](docs/qualification/2026-10-20-local-http-ui.md)
 records actual receiver UI/QR with real loopback OPTIONS/create/poll/cancel in two
-engines, not native App Attest/JWE/HA/TLS-edge or public activation. Source review,
-protected merge, main CI and own Finalization remain pending until reconciled in
-owning10. No new timer, API/Core/Apple writer or deployment admission.
+engines, not native App Attest/JWE/HA/TLS-edge or public activation. SourcePR36 protected delivered0f484ace; PR/mainCI39409384785/39409666468 PASS.
+Separate [Finalization preparation](docs/qualification/2026-10-20-local-http-ui-finalization.md)
+awaits its own exact merge/final-main reconciliation in owning10. No new timer, API/Core/Apple writer or deployment admission.
 
 ---
 
