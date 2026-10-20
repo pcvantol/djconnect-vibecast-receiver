@@ -1,3 +1,17 @@
+# Current local receiver/API HTTP integration — 2026-10-20
+
+Same sole receiverwriter, branch `codex/vibecast-http-ui-integration`, base684ac017.
+Protected API828fbaf + separate Finalization6288860618 supplies the fixed local
+root runtime27e9f5ae. This increment adds only pinned qualification source and CI;
+production app/unavailableAdapter, CSP, service/wire pins and Cast import stay intact.
+[Qualification scope](docs/qualification/2026-10-20-local-http-ui.md)
+records actual receiver UI/QR with real loopback OPTIONS/create/poll/cancel in two
+engines, not native App Attest/JWE/HA/TLS-edge or public activation. Source review,
+protected merge, main CI and own Finalization remain pending until reconciled in
+owning10. No new timer, API/Core/Apple writer or deployment admission.
+
+---
+
 # Current Brand V2 receiver adoption — 2026-10-19
 
 Same sole writer, branchcodex/vibecast-brand-v2, based on protected main4e3c5169.

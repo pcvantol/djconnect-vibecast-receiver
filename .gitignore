@@ -205,3 +205,6 @@ pids/
 
 # Framework-specific generated output
 .gatsby/
+
+# Read-only pinned API qualification checkout, not a second writer.
+.qa/
