@@ -31,3 +31,10 @@ for(const width of [320,390,1920])test(`canonical wordmark stays readable and wi
  expect(state.natural).toEqual(width>800?[2048,512]:[1728,448]);expect(state.width).toBeGreaterThanOrEqual(256);expect(state.right).toBeLessThanOrEqual(state.viewport);expect(state.height).toBeCloseTo(state.width*state.natural[1]/state.natural[0],1);if(width>800)expect(state.width).toBeGreaterThanOrEqual(512);
  await expect(page.locator('html')).toHaveAttribute('data-state','unavailable');await expect(page.locator('#qr-panel')).toBeHidden();
 });
+
+for(const colorScheme of ['light','dark'])test(`wordmark remains legible with ${colorScheme} forced colors`,async({page})=>{
+ await page.emulateMedia({forcedColors:'active',colorScheme});await page.goto('/');await expect(page.locator('.maker img')).toBeVisible();
+ const state=await page.locator('.maker').evaluate(node=>({active:matchMedia('(forced-colors:active)').matches,background:getComputedStyle(node).backgroundColor}));
+ if(state.active){expect(state.background).toBe('rgb(16, 19, 35)');}
+ const image=await page.locator('.maker img').evaluate(async node=>{await node.decode();return{width:node.getBoundingClientRect().width,natural:node.naturalWidth};});expect(image.width).toBeGreaterThanOrEqual(256);expect(image.natural).toBeGreaterThan(1000);
+});

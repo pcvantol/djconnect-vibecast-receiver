@@ -24,7 +24,7 @@ VibeCast hero, palette, adaptiveeffects, all5locales, CSP/unavailableAdapter,
 public noQR/pairing and separate HA admission unchanged. Tests cover image decode,
 intrinsicdimensions/aspect, viewport bounds320/390/1920 and actualunavailable UI.
 
-Local99Node/11Python/98Chromium+WebKit browsercases PASS; actual8normal/contrast
+Local99Node/11Python/102Chromium+WebKit browsercases PASS; actual16normal/contrast/forced-colors
 mobile/TV previews generated independently. This is source qualification, not
 publicPages/native/HA/physical acceptance. Receiving independent reviews and
 protectedCI/merge/publication remain separate.
@@ -67,3 +67,21 @@ First local candidate40244d4 was not pushed/published: product review P2 correct
 found primary-wordmark sizing below the512px producer threshold. Responsive
 canonical compact-dark now replaces primary on the smaller layout. Tests assert
 actual selected dimensions plus primary512px minimum. No variant rule waived.
+
+A later actual Chromium forced-colors/lightCanvas check found a second pre-merge
+P2: white canonical PNG letters lost contrast on Canvaswhite. A forced-colors-only
+dark backing now preserves full canonical image bytes and minimumvariantwidth;
+light/darkforcedcolors regressioncases verify the backing without recolouring.
+
+PR42 first CI39446654254 also reproduced the earlier pre-existing WebKit lost-create
+fixture unsafe outcome. No runtime/API/CSP change caused by this branding slice.
+Failure trace retained; cause not yet asserted. Test-only diagnostics wrap native
+decrypt and verification stages, recording only boolean fieldmatches/algorithm/
+errorclass/visibility, never keys, ciphertext or plaintext. No validators, tests,
+timeouts, retrylimits or policy checks are bypassed. Green actualCI remains required.
+
+The diagnosticobserver was separately reviewed and corrected before its first
+commit so observation parsing cannot turn a successful native decrypt into a
+failure. Native success returns the original buffer even if observation fails;
+native failure alone is rethrown. No private material is logged. Ten unchanged
+nativecrypto-focused local cases PASS; actualLinuxCI still must classify/qualify.

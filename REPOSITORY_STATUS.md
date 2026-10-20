@@ -4,7 +4,7 @@ Peter requested the latest web publication including the canonical wordmark.
 Sole writer, branch codex/vibecast-web-brand201-wordmark, base2007140.
 [Source/effect scope](docs/qualification/2026-10-20-web-brand201-wordmark.md).
 Protected CoreBrand2.0.1 smallmarks + exact primary-dark wordmark are imported.
-Local99Node11Python98browserPASS; actualpublication/ownFinalization pending.
+Local99Node11Python102browserPASS; actualpublication/ownFinalization pending.
 Current web220f/sourcef5c remains rollback baseline; Cast/API379 unchanged.
 TimerOFF; publicrendezvousunqualified, native/HA/physicalacceptance separate.
 
