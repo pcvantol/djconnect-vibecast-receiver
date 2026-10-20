@@ -26,7 +26,7 @@ checks. An earlier read before Pages completion still saw prior bytes and was
 not countedPASS; the post-completion read is the measured source delivery.
 No TLS bypass, DNS/project mutation or separate localdeploy workaround.
 
-Public bootstrap remains exactf5c/source220f0e59 production. Full root+immutable
+Public bootstrap remains sourcef5c, production220f0e59. Full root+immutable
 hash/type/header/404 readback againPASS. Downloaded source-main bootstrap artifact
 verifies all hashes/source048c, manifest39884d6b; payload files match currently
 publishedf5c exactly. Actualmain HTTP artifact explicitly binds048c/API379 and
