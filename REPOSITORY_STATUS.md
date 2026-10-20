@@ -1,12 +1,14 @@
-# Current renderer1.1.3 receiving adoption — 2026-10-20
+# Current renderer1.1.3 receiving delivery — 2026-10-20
 
-Sole writer, branch `codex/vibecast-renderer-113-adoption`, basea69cc24.
-Protected Core97a20fa1 + separate Finalizatione390c5a8 independently verified.
-[Receiving scope, source pins and evidence](docs/qualification/2026-10-20-renderer-113-adoption.md).
-Supersedes rejected1.1.2 receiving candidate; original archives/history preserved.
-Own exact source/effect reviews, protected merge, CI/publication readbacks and
-separate Finalization remain pending. Public bootstrap/API379 unchanged.
-No new timer, producer write or native/HA/CAF/physical-TV acceptance.
+SourcePR40 protected048c877c4eacad9186ef6fc85830681a8982ca3d/tree3a6ae032 equals
+exact twice independently reviewed2e6d20b. PR/mainCI39442071945/39442451516 PASS.
+ActualCastproductionf94fbbef immutable+bothfixedHTTPSroots/manifest six exact
+bytes/type/privacyPASS; bootstrapf5c/220f unchanged/fullreadbackPASS.
+[Separate Finalization](docs/qualification/2026-10-20-renderer-113-finalization.md)
+records exact proof and awaits its own reviews/protectedmerge/finalmain reconciliation.
+Core source97a20fa1+separateFinale390c5a8; importer/CAFhost/v1schema/API379 preserved.
+PublicRENDEZVOUS unqualified; APPLE_HA_E2E OPEN; PHYSICAL_TV/realCAF NOT_RUN.
+Sole writer, branch codex/vibecast-renderer-113-finalization; timerOFF.
 
 ---
 
