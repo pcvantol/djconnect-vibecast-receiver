@@ -5,7 +5,9 @@ Peter requested continuation after the separately finalized API379 source handof
 [Pickup scope](docs/qualification/2026-10-20-api379-http-ui.md): pin the existing
 local HTTP/UI harness and CI to protected379d70b; preserve historical API828/receiver9c
 proofs. No product adapter/CSP/wire/frontend/Cast change or public activation.
-Exact review, CI, protected merge, main evidence and own Finalization are pending.
+SourcePR38 protected delivereddd34c92 with exact reviewed-tree equality and green
+PR/mainCI39428889067/39429190209. Separate [Finalization preparation](docs/qualification/2026-10-20-api379-finalization.md)
+awaits its own protected merge/final-main/readback reconciliation.
 Timer OFF; producer writers and native/HA/physical authority remain separate.
 
 ---
