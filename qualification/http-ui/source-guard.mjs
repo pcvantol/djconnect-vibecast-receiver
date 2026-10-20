@@ -6,7 +6,7 @@ export const sha256=bytes=>createHash('sha256').update(bytes).digest('hex');
 // An externally prepared checkout is data, never an alternative runtime/policy.
 export async function verifyAPISource(root,pin){
  assert.equal(pin.schema,1);assert.equal(pin.repository,'pcvantol/djconnect-api');
- assert.equal(pin.source,'828fbaf300ca369dcc753b676295e84094d5e8c6');
+ assert.equal(pin.source,'379d70b558508f747d578d7b7d90a665bad7ffc8');
  assert.equal(pin.runtime,'qualification/rendezvous/root-integration-runtime.mjs');
  assert.equal(pin.runtime_sha256,'27e9f5ae2a7b7350f3ae51352cf4efb023ec17f79bc8f42968cc3bdfbfe34854');
  const directory=await realpath(root);assert.equal(directory,path.resolve(root),'API checkout must not be a symlink');

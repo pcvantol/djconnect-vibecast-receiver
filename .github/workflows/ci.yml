@@ -48,7 +48,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
         with:
           repository: pcvantol/djconnect-api
-          ref: 828fbaf300ca369dcc753b676295e84094d5e8c6
+          ref: 379d70b558508f747d578d7b7d90a665bad7ffc8
           path: .qa/api
           persist-credentials: false
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1

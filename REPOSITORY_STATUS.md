@@ -1,3 +1,15 @@
+# Current API379 local harness pickup — 2026-10-20
+
+Same sole receiverwriter, branch `codex/vibecast-api379-qualification`, base9cfe13a.
+Peter requested continuation after the separately finalized API379 source handoff.
+[Pickup scope](docs/qualification/2026-10-20-api379-http-ui.md): pin the existing
+local HTTP/UI harness and CI to protected379d70b; preserve historical API828/receiver9c
+proofs. No product adapter/CSP/wire/frontend/Cast change or public activation.
+Exact review, CI, protected merge, main evidence and own Finalization are pending.
+Timer OFF; producer writers and native/HA/physical authority remain separate.
+
+---
+
 # Current local receiver/API HTTP integration — 2026-10-20
 
 Same sole receiverwriter, branch `codex/vibecast-http-ui-integration`, base684ac017.

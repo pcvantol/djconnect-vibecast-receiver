@@ -10,6 +10,7 @@ test('QA bridge refuses remote, credentialed, query, fragment and non-capability
 });
 test('different API source/runtime pins fail before source loading',async()=>{
  await assert.rejects(verifyAPISource('/not-loaded',{...pin,source:'0'.repeat(40)}));
+ await assert.rejects(verifyAPISource('/not-loaded',{...pin,source:'828fbaf300ca369dcc753b676295e84094d5e8c6'}));
  await assert.rejects(verifyAPISource('/not-loaded',{...pin,runtime_sha256:'0'.repeat(64)}));
 });
 test('API source drift, path escape and symlink reject before importing runtime',async()=>{
