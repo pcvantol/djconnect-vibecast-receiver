@@ -1,3 +1,15 @@
+# Current VibeCast.tv logo and wordmark update — 2026-10-20
+
+Peter requested the latest web publication including the canonical wordmark.
+Sole writer, branch codex/vibecast-web-brand201-wordmark, base2007140.
+[Source/effect scope](docs/qualification/2026-10-20-web-brand201-wordmark.md).
+Protected CoreBrand2.0.1 smallmarks + exact primary-dark wordmark are imported.
+Local99Node11Python102browserPASS; actualpublication/ownFinalization pending.
+Current web220f/sourcef5c remains rollback baseline; Cast/API379 unchanged.
+TimerOFF; publicrendezvousunqualified, native/HA/physicalacceptance separate.
+
+---
+
 # Current renderer1.1.3 receiving delivery — 2026-10-20
 
 SourcePR40 protected048c877c4eacad9186ef6fc85830681a8982ca3d/tree3a6ae032 equals

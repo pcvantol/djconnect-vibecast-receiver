@@ -5,9 +5,9 @@ import path from 'node:path';
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
 export async function verifyBrand() {
  const pin=JSON.parse(await readFile('bootstrap/brand-assets.json','utf8'));
- if(pin.producer!=='pcvantol/djconnect'||pin.sourceSHA!=='7e14e5970b3f68d33d243ae6bab2b281fad59bb2'||pin.finalizationSHA!=='baac22d771bf3141404001517f62a5e34f8c8644')throw Error('Unqualified brand producer');
+ if(pin.producer!=='pcvantol/djconnect'||pin.sourceSHA!=='97a20fa17d60aa32cf92dc106707d70540ee479e'||pin.finalizationSHA!=='e390c5a81e2d2d272a46cc720c83cc4667c355c1')throw Error('Unqualified brand producer');
  const raw=await readFile(pin.manifest);
- if(sha(raw)!==pin.manifestSHA256||pin.manifestSHA256!=='73cc408e10d88aa1fb8a1be2783b9c577aec398ce3dcd54c2f997ad1425984d2')throw Error('Brand manifest mismatch');
+ if(sha(raw)!==pin.manifestSHA256||pin.manifestSHA256!=='3fbdfe2a3ae326900a721c6bca1ebfd95c3f4a19d48c938efb86b0fad4cef56f')throw Error('Brand manifest mismatch');
  const manifest=JSON.parse(raw);
  for(const [local,source] of Object.entries(pin.assets)) {
   const expected=manifest.files[source],bytes=await readFile(local);
