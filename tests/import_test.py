@@ -112,8 +112,22 @@ class ReadonlyRollbackTest(unittest.TestCase):
             self.assertEqual(page.read_bytes(), (ROOT / 'wwwroot/index.html').read_bytes())
             importer.adopt(ROOT / 'vibecast-source-lock.json', root=root, check=True)
 
+class ImmediateReadonlyRollbackTest(unittest.TestCase):
+    def test_restore_immediate_prior_cast_then_reapply_candidate_exactly(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp).resolve()
+            shutil.copytree(ROOT/'vendor',root/'vendor')
+            shutil.copytree(ROOT/'wwwroot',root/'wwwroot')
+            importer.adopt(ROOT/'vibecast-source-lock-readonly-6a3adbc8.json',root=root)
+            self.assertEqual(importer.sha256((root/'wwwroot/index.html').read_bytes()),'cf4421778d093e130b46866b98ca1ab72b142e5359a1a6d43ea082c1e79e9fab')
+            self.assertEqual(importer.sha256((root/'wwwroot/vibecast-manifest.json').read_bytes()),'ee18b3d9f45341ae522d2406a087c009da48a67a99d7da3e1cbbdf483a5a09d2')
+            importer.adopt(ROOT/'vibecast-source-lock.json',root=root)
+            for name in ['index.html','vibecast-manifest.json','_headers']:
+                self.assertEqual((root/'wwwroot'/name).read_bytes(),(ROOT/'wwwroot'/name).read_bytes())
+            importer.adopt(ROOT/'vibecast-source-lock.json',root=root,check=True)
+
 class LocalHostBoundaryTest(unittest.TestCase):
-    def test_local_pi_adapter_unchanged_and_both_entries_share_the_pinned_renderer(self):
+    def test_cast_adapter_unchanged_local_transport_preserved_and_shared_renderer(self):
         import runpy
         old=json.loads((ROOT/'vibecast-source-lock-1.0.0.json').read_text())
         new=json.loads((ROOT/'vibecast-source-lock.json').read_text())
@@ -126,7 +140,18 @@ class LocalHostBoundaryTest(unittest.TestCase):
             scripts=[]
             for folder in [previous,current]:
                 parser=core['InlineScripts']();parser.feed((folder/'local/vibecast.html').read_text());scripts.append(parser.scripts)
-            self.assertEqual(scripts[0][1],scripts[1][1])
+            # Core1.1.2 owns new localized onboarding DOM, retaining the local transport.
+            import re
+            for pattern in [r'  let stopped[\s\S]*?      panel.innerHTML', r'      panel.hidden = false;[\s\S]*']:
+                self.assertEqual(re.search(pattern,scripts[0][1]).group(),re.search(pattern,scripts[1][1]).group())
+            for old_folder,new_folder in [(previous,current)]:
+                cast_scripts=[]
+                prior=Path(temp)/'prior-readonly';prior.mkdir()
+                rollback=json.loads((ROOT/'vibecast-source-lock-readonly-6a3adbc8.json').read_text())
+                importer.extract(ROOT/rollback['bundle_file'],prior)
+                for folder in [prior,new_folder]:
+                    host_parser=core['InlineScripts']();host_parser.feed((folder/'cast/index.html').read_text());cast_scripts.append(host_parser.scripts[-1])
+                self.assertEqual(cast_scripts[0],cast_scripts[1])
             self.assertNotIn('gstatic.com',(current/'local/vibecast.html').read_text())
             self.assertNotIn('DJC_VIBECAST_MODE = "cast"',scripts[1][0])
             parser=core['InlineScripts']();parser.feed((current/'cast/index.html').read_text())

@@ -24,11 +24,13 @@ connects directly to the user's reachable Home Assistant instance.
 Cloudflare Pages hosts only this static code. It is intentionally deployed and
 released independently from the DJConnect marketing website.
 
-The current receiver source is an exact import of Core's shared renderer build 1.1.0.
+The current receiver source is an exact import of Core's shared renderer build 1.1.3.
 Run `npm run import:core`, `npm run verify:core` and `npm test` offline.
 See [pinned adoption, compatibility and effect gates](docs/CAST_ADOPTION.md).
 Generated `wwwroot/index.html` must never be hand-edited. Source adoption does
 not establish Pages, real CAF, physical Cast or Apple-sender acceptance.
+
+See [current1.1.3 adoption and publication evidence](docs/qualification/2026-10-20-renderer-113-adoption.md).
 
 See [1.1.0 status adoption and publication boundary](docs/CAST_STATUS_ADOPTION_1_1.md).
 
