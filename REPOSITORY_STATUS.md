@@ -1,3 +1,15 @@
+# Current renderer1.1.3 receiving adoption — 2026-10-20
+
+Sole writer, branch `codex/vibecast-renderer-113-adoption`, basea69cc24.
+Protected Core97a20fa1 + separate Finalizatione390c5a8 independently verified.
+[Receiving scope, source pins and evidence](docs/qualification/2026-10-20-renderer-113-adoption.md).
+Supersedes rejected1.1.2 receiving candidate; original archives/history preserved.
+Own exact source/effect reviews, protected merge, CI/publication readbacks and
+separate Finalization remain pending. Public bootstrap/API379 unchanged.
+No new timer, producer write or native/HA/CAF/physical-TV acceptance.
+
+---
+
 # Current API379 local harness pickup — 2026-10-20
 
 Same sole receiverwriter, branch `codex/vibecast-api379-qualification`, base9cfe13a.
