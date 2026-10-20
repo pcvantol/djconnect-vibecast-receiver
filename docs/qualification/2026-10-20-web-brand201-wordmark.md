@@ -11,11 +11,14 @@ complete74safe-file producerZIP080ddbc0 verified; every selected PNG matches
 exact Git blob, manifest SHA/size/dimensions and ZIP bytes. Official small
 16/32/40px PNGs replace prior headset assets. New actual canonical primary-dark
 wordmark2048x512/566999bytes/2cf02b72 supplies DJConnect + Your music. Your DJ.
+Canonical compact-dark1728x448/437338bytes/274651d7 supplies the smaller layout.
 No redraw, resampling, generated logo, newfont or manuallyretyped wordmark.
 README variants and largeglass128 unchanged bytes. Original licence retained.
 
-Footer uses full canonical wordmark with intrinsic ratio and alt text; desktop
-384px/mobile320px-oravailable-width; footer stacks on mobile. Qualified320px+
+Footer uses a canonical responsive picture with intrinsic ratio and alt text;
+desktop primary512px, mobile compact320px-oravailable-width. The picture switch
+at800px matches the layout switch, preserving primary512px+ and compact below512
+per the exact producer variant contract. Footer stacks on mobile. Qualified320px+
 layouts keep totalwordmarkwidth256px+, therefore embeddedglass64px+. Existing
 VibeCast hero, palette, adaptiveeffects, all5locales, CSP/unavailableAdapter,
 public noQR/pairing and separate HA admission unchanged. Tests cover image decode,
@@ -29,7 +32,7 @@ protectedCI/merge/publication remain separate.
 ## Full live delta and effect admission
 
 Compared with actualpublishedf5c/220f, only index.html, style.css, brand-mark-16.png,
-brand-mark-32.png, brand-mark-40.png change; brand-wordmark-primary-dark.png is new.
+brand-mark-32.png, brand-mark-40.png change; brand-wordmark-primary-dark.png and brand-wordmark-compact-dark.png are new.
 Build manifest/checksums change to bind the new artifact/source. Every other
 public payload file is byte-identical, including unavailable service/networkpolicy.
 Cast wwwroot/import/vendor/source locks/API379/workflows untouched.
@@ -57,3 +60,10 @@ SOURCE/CI/PAGES/DOMAIN_TLS only qualified by actual measuredreceipts afterward;
 RENDEZVOUS stayspublicunqualified; APPLE_HA_E2E OPEN; PHYSICAL_TV NOT_RUN.
 Own separateFinalization/Core1101handoff follows actual publication; this source
 record does not pre-certify that future delivery.
+
+## Pre-push review correction
+
+First local candidate40244d4 was not pushed/published: product review P2 correctly
+found primary-wordmark sizing below the512px producer threshold. Responsive
+canonical compact-dark now replaces primary on the smaller layout. Tests assert
+actual selected dimensions plus primary512px minimum. No variant rule waived.

@@ -9,10 +9,10 @@ both exact protected Git blobs and ZIP members. No claim of a new network ZIP do
 Official16/32/40px headset exports replace only previous small marks; largeglass
 and all outlined Inter wordmarks remain byte-identical. OFL/provenance retained.
 
-Public footer now uses the actual canonical primary-dark PNG wordmark including
-its tagline, no retyped approximation or regenerated artwork. Its full2048x512
-canvas is rendered at256px+ total width on qualified320px+ layouts, keeping the
-embedded glass mark at64px+. Header and favicon use proper smallsize exports.
+Public footer now uses canonical primary-dark2048x512 at512px desktop, and
+compact-dark1728x448 below512px on the mobile layout. The full variant includes
+the tagline; the compact variant preserves legibility. No retyped approximation
+or regenerated artwork. Both keep the embedded glass mark at64px+ on320px+ layouts. Header and favicon use proper smallsize exports.
 Exact input map/verifier remain bootstrap/brand-assets.json/scripts/verify_brand.mjs.
 Historical source receipts below remain historical, not current-source assertions.
 

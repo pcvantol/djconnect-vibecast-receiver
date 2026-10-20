@@ -21,7 +21,8 @@
     "docs/brand-v2/wordmark-primary-dark.png": "assets/djconnect/brand-v2/wordmark-primary-dark.png",
     "docs/brand-v2/wordmark-compact-light.png": "assets/djconnect/brand-v2/wordmark-compact-light.png",
     "docs/brand-v2/wordmark-compact-dark.png": "assets/djconnect/brand-v2/wordmark-compact-dark.png",
-    "bootstrap/public/brand-wordmark-primary-dark.png": "assets/djconnect/brand-v2/wordmark-primary-dark.png"
+    "bootstrap/public/brand-wordmark-primary-dark.png": "assets/djconnect/brand-v2/wordmark-primary-dark.png",
+    "bootstrap/public/brand-wordmark-compact-dark.png": "assets/djconnect/brand-v2/wordmark-compact-dark.png"
   },
   "renderer": "NOT_IMPORTED; full independently pinned build required",
   "socialPreview": "NOT_SUPPLIED; settings unchanged"
