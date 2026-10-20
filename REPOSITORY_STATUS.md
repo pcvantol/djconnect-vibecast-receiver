@@ -1,12 +1,13 @@
-# Current VibeCast.tv logo and wordmark update — 2026-10-20
+# Current VibeCast.tv Brand2.0.1 / canonical wordmark delivery — 2026-10-20
 
-Peter requested the latest web publication including the canonical wordmark.
-Sole writer, branch codex/vibecast-web-brand201-wordmark, base2007140.
-[Source/effect scope](docs/qualification/2026-10-20-web-brand201-wordmark.md).
-Protected CoreBrand2.0.1 smallmarks + exact primary-dark wordmark are imported.
-Local99Node11Python102browserPASS; actualpublication/ownFinalization pending.
-Current web220f/sourcef5c remains rollback baseline; Cast/API379 unchanged.
-TimerOFF; publicrendezvousunqualified, native/HA/physicalacceptance separate.
+SourcePR42 protected57938b7/tree3a2b6d68 equals twice reviewedf0cee8b; ownmain
+CI39448970156/projection39448970159 PASS. Protectedpublication39449321318SUCCESS,
+actualproduction8f5d0fb4/source579; fullHTTPS/hash/type/header/404readbacks PASS.
+RealChromium/WebKit mobile/desktopwordmarkPASS. Prior220f/f5c artifact retained.
+[Separate Finalization](docs/qualification/2026-10-20-web-brand201-finalization.md)
+awaits its own reviews/protectedmerge/finalmain reconciliation. Cast1.1.3/API379
+unchanged; publicRENDEZVOUSunqualified, APPLE_HA_E2EOPEN, PHYSICAL_TVNOT_RUN.
+Solebranchcodex/vibecast-web-brand201-finalization; timerOFF.
 
 ---
 
