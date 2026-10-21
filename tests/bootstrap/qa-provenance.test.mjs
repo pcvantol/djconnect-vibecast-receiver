@@ -45,3 +45,14 @@ test('a foreign build working directory cannot borrow the module-root source ide
   await assert.rejects(readFile(path.join(b.root,'dist/bootstrap-qa/build-manifest.json')),{code:'ENOENT'});
  }finally{await rm(a.root,{recursive:true,force:true});await rm(b.root,{recursive:true,force:true});}
 });
+
+test('Git replacement refs cannot substitute another commit under an approved SHA',async()=>{
+ const a=await fixture();try{
+  const original=a.git('rev-parse','HEAD'),file='bootstrap/qa/adapter.mjs';
+  await writeFile(path.join(a.root,file),'// substituted fixture');a.git('add',file);a.git('-c','user.name=QA Fixture','-c','user.email=qa@example.invalid','commit','--quiet','-m','Replacement fixture');
+  const replacement=a.git('rev-parse','HEAD');a.git('reset','--soft',original);a.git('replace',original,replacement);
+  assert.equal(a.git('status','--porcelain'),'');assert.equal(a.git('show',original+':'+file),'// substituted fixture');
+  const read=a.run(`console.log(gitRead(['show','${original}:${file}']).toString())`);assert.equal(read.status,0,read.stderr);assert.equal(read.stdout.trim(),'// original fixture');
+  const rejected=a.run(`await sourceInventory(await fixedSourceIdentity('${original}'))`);assert.notEqual(rejected.status,0);assert.match(rejected.stderr,/clean source|differs from exact committed source/);
+ }finally{await rm(a.root,{recursive:true,force:true});}
+});

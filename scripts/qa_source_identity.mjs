@@ -4,7 +4,7 @@ import {createHash} from 'node:crypto';import path from 'node:path';import {file
 export const repositoryRoot=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const env=()=>Object.fromEntries(Object.entries(process.env).filter(([k])=>!k.startsWith('GIT_')));
 export const sha256=x=>createHash('sha256').update(x).digest('hex');
-export function gitRead(args){return execFileSync('git',['--no-optional-locks',...args],{cwd:repositoryRoot,env:env(),maxBuffer:32*1024*1024});}
+export function gitRead(args){return execFileSync('git',['--no-replace-objects','--no-optional-locks',...args],{cwd:repositoryRoot,env:env(),maxBuffer:32*1024*1024});}
 export async function fixedSourceIdentity(expected){
  const root=await realpath(repositoryRoot);
  if(await realpath(process.cwd())!==root)throw Error('QA must run from its real repository root');

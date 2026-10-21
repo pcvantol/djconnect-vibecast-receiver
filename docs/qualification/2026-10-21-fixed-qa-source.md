@@ -114,3 +114,11 @@ fresh Node process: mutated disposable index.html passed both old build and
 verification with sourceCleantrue/canonicalHEAD. The fixture was deleted; no
 source files were changed. The new third control invokes the actual corrected
 builder from the foreign cwd and proves refusal with no output manifest.
+
+A second independent4fc P2 counterproof demonstrated Git replacementrefs could
+substitute commitB blobs under the approved commitA SHA with ordinary statusclean.
+Every QA Git read now explicitly disables object replacement. A fourth disposable
+control demonstrates ordinary show/status accept substitution, corrected Git reads
+return originalA bytes and the fixed entry refuses the substituted checkout.
+This changes source provenance only; previous runtime and contract evidence is
+historical and source/effect review must bind the new exact candidate again.
