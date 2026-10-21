@@ -73,3 +73,29 @@ source review and any protected delivery admission. This record
 does not assert merge, CI, source delivery, installed readiness or Finalization.
 SOURCE LOCAL_WIP; CI NOT_RUN; PAGES/DOMAIN_TLS UNCHANGED;
 RENDEZVOUS SERVICE_UNQUALIFIED; APPLE_HA_E2E OPEN; PHYSICAL_TV NOT_RUN.
+
+## Artifact provenance correction after owning API review
+
+API found that the initial f8d97a6 builder accepted an arbitrary40hex sourceSHA
+and inherited Git environment overrides. Its verifier checked that same supplied
+SHA; previous reproduction checks therefore did not establish trusted release
+provenance. The old two independent GOs are historical, not transferred to this
+correction. API ingress/schema/consume and Core B source compatibility conclusions
+remain separately scoped; no whole security or release GO follows.
+
+The correction derives the real repository from the executing module, sanitizes
+all GIT_* variables, requires a clean actual worktree and real HEAD, and rejects
+a caller-supplied mismatch. All tracked bootstrap/build inputs are independently
+compared with exact Git blobs, including bytes hidden by assume-unchanged flags.
+The actual bundled dependency graph is captured at load and rechecked; manifest
+provenance and separate QA verification bind those source and installed hashes.
+Pre/post source identity checks retain fail-closed concurrent-source behavior.
+No configurable repository root or alternate origin is exposed.
+
+Two actual disposable-Git causal controls PASS: ordinary Git accepts a foreign
+GIT_DIR/worktree/index/config identity while the fixed reader ignores it and
+rejects the claimed foreign SHA; tracked dirty and untracked input fail, and
+assume-unchanged hidden tracked changes fail exact committed-byte validation.
+No active repository/index was modified by these negative tests. Full new-source
+validation and two NEW exact reviews follow the clean-source freeze. No old
+synthetic aaaa-stamped artifact is accepted as corrected-source evidence.

@@ -1,6 +1,7 @@
 // Closed source-only QA derivation, never an execution/deployment admission.
 import {readFile,writeFile,mkdir,readdir,rm,lstat} from 'node:fs/promises';
-import {createHash} from 'node:crypto';import {execFileSync} from 'node:child_process';
+import {createHash} from 'node:crypto';
+import {fixedSourceIdentity,sourceInventory,verifyInventory,inputBytes,sha256} from './qa_source_identity.mjs';
 import path from 'node:path';import {fileURLToPath} from 'node:url';import {build as bundle} from 'esbuild';
 export const qa=Object.freeze({product:'vibecast-tv-bootstrap-qa',browser:'https://qa.vibecast.tv',service:'https://api-vibecast-qa.djconnect.dev',worker:'djconnect-api-vibecast-qa'});
 export const sourcePins=Object.freeze({
@@ -21,18 +22,31 @@ export function transform(file,source){
  'const factory=()=>createQAAdapter();\nconst controller = new BootstrapController({ adapter: factory(), adapterFactory: factory, render: state => {current=state;paint();}, navigate: url => {if(location.origin===QA_BROWSER)location.replace(url);} });');
  throw Error('Unknown QA transform');
 }
-export async function buildQA(sourceSHA=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim()){
- if(!/^[a-f0-9]{40}$/.test(sourceSHA))throw Error('Exact source SHA required');
+export async function buildQA(expectedSourceSHA){
+ const sourceSHA=await fixedSourceIdentity(expectedSourceSHA),sourceFiles=await sourceInventory(sourceSHA);
  const output='dist/bootstrap-qa';
  // Check all fixed transforms before any output mutation. No caller-supplied paths/origins.
  const inputs={};for(const file of Object.keys(sourcePins))inputs[file]=transform(file,await readFile(file,'utf8'));
+ const installedFiles={};
  const plugin={name:'closed-qa-graph',setup(b){
   b.onLoad({filter:/[\\/]bootstrap[\\/]src[\\/](wire|wire-schema|app)\.mjs$/},async args=>({contents:inputs[path.relative(process.cwd(),args.path).split(path.sep).join('/')],loader:'js',resolveDir:path.dirname(args.path)}));
   b.onResolve({filter:/\.\.\/qa\/adapter\.mjs$/},()=>({path:'./qa-adapter.mjs',external:true}));
+  b.onLoad({filter:/\.(?:m?js|cjs|json)$/},async args=>{
+   const name=path.relative(process.cwd(),args.path).split(path.sep).join('/'),bytes=await inputBytes(name),digest=sha256(bytes);
+   if(name.startsWith('node_modules/')){if(Object.hasOwn(installedFiles,name)&&installedFiles[name]!==digest)throw Error('QA installed input changed during build');installedFiles[name]=digest;}
+   else if(sourceFiles[name]!==digest)throw Error('Uncommitted QA module input');
+   return {contents:bytes.toString(),loader:name.endsWith('.json')?'json':'js',resolveDir:path.dirname(args.path)};
+  });
  }};
- const options={bundle:true,format:'esm',platform:'browser',target:'es2022',write:false,legalComments:'inline',plugins:[plugin]};
- const adapter=(await bundle({...options,entryPoints:['bootstrap/qa/adapter.mjs']})).outputFiles[0].contents;
- const app=(await bundle({...options,entryPoints:['bootstrap/src/app.mjs']})).outputFiles[0].contents;
+ const options={bundle:true,format:'esm',platform:'browser',target:'es2022',write:false,metafile:true,legalComments:'inline',plugins:[plugin]};
+ const adapterBuild=await bundle({...options,entryPoints:['bootstrap/qa/adapter.mjs']});
+ const appBuild=await bundle({...options,entryPoints:['bootstrap/src/app.mjs']});
+ const adapter=adapterBuild.outputFiles[0].contents,app=appBuild.outputFiles[0].contents;
+ for(const name of [...new Set([...Object.keys(adapterBuild.metafile.inputs),...Object.keys(appBuild.metafile.inputs)])].sort()){
+  if(name.startsWith('node_modules/')){if(!Object.hasOwn(installedFiles,name)||installedFiles[name]!==sha256(await inputBytes(name)))throw Error('QA installed graph input drift');}
+  else if(!Object.hasOwn(sourceFiles,name))throw Error('Uncommitted QA module graph input: '+name);
+ }
+ await verifyInventory(sourceSHA,sourceFiles,installedFiles);
  // Refuse symlink destinations/parents instead of following an unrelated tree.
  for(const dir of ['dist',output]){try{if((await lstat(dir)).isSymbolicLink())throw Error('Unsafe QA output');}catch(e){if(e.code!=='ENOENT')throw e;}}
  await rm(output,{recursive:true,force:true});await mkdir(output,{recursive:true});const files={};
@@ -46,7 +60,9 @@ export async function buildQA(sourceSHA=execFileSync('git',['rev-parse','HEAD'],
   await put(file,bytes);
  }
  await put('app.mjs',app);await put('qa-adapter.mjs',adapter);
- const manifest={schema:1,sourceSHA,product:qa.product,variant:'QA_ONLY',rendezvous:'SOURCE_REVIEW_ONLY',tuple:qa,admitted_test_tuple:null,activation_artifact:null,service_qualified:false,native_accepted:false,sourcePins,files:Object.fromEntries(Object.entries(files).sort())};
+ await verifyInventory(sourceSHA,sourceFiles,installedFiles);
+ const provenance={sourceSHA,sourceClean:true,gitEnvironmentOverridesIgnored:true,committedGraphVerified:true,sourceFiles,installedFiles:Object.fromEntries(Object.entries(installedFiles).sort())};
+ const manifest={schema:1,sourceSHA,provenance,product:qa.product,variant:'QA_ONLY',rendezvous:'SOURCE_REVIEW_ONLY',tuple:qa,admitted_test_tuple:null,activation_artifact:null,service_qualified:false,native_accepted:false,sourcePins,files:Object.fromEntries(Object.entries(files).sort())};
  const data=JSON.stringify(manifest,null,2)+'\n';await writeFile(output+'/build-manifest.json',data);
  const hashes={...manifest.files,'build-manifest.json':hash(data)};await writeFile(output+'/SHA256SUMS',Object.entries(hashes).sort().map(([f,h])=>`${h}  ${f}\n`).join(''));return manifest;
 }
