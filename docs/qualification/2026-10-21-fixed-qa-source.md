@@ -99,3 +99,18 @@ assume-unchanged hidden tracked changes fail exact committed-byte validation.
 No active repository/index was modified by these negative tests. Full new-source
 validation and two NEW exact reviews follow the clean-source freeze. No old
 synthetic aaaa-stamped artifact is accepted as corrected-source evidence.
+
+Both fresh reviewers rejected intermediate4fc1935 with a concrete additional P2:
+Git metadata was root-bound but public reads were still cwd-relative. That
+intermediate is NOT_GO despite its110Node/11Python/10QA-browser software passes.
+The new correction refuses foreign real working directories before any output
+mutation and compares each public input's actual bytes with its committed digest
+at the time of use. A third disposable two-root control demonstrates the prior
+Git-only reader still returns the module-root HEAD from a foreign cwd while the
+corrected entry refuses it. New exact reviews/results are required again.
+
+Independent security reviewer actually reproduced the4fc foreign-cwd bypass in a
+fresh Node process: mutated disposable index.html passed both old build and
+verification with sourceCleantrue/canonicalHEAD. The fixture was deleted; no
+source files were changed. The new third control invokes the actual corrected
+builder from the foreign cwd and proves refusal with no output manifest.

@@ -54,7 +54,8 @@ export async function buildQA(expectedSourceSHA){
  for(const file of (await readdir('bootstrap/public')).sort()){
   if(file==='app.mjs'||file==='qa-adapter.mjs')throw Error('QA output collision');
   if((await lstat('bootstrap/public/'+file)).isSymbolicLink())throw Error('Unsafe QA input');
-  let bytes=await readFile('bootstrap/public/'+file);
+  let bytes=await inputBytes('bootstrap/public/'+file);
+  if(sha256(bytes)!==sourceFiles['bootstrap/public/'+file])throw Error('QA public input differs from committed source');
   if(file==='_headers')bytes=Buffer.from(inputs['bootstrap/public/_headers']);
   if(file==='index.html')bytes=Buffer.from(replaceOnce(bytes.toString(),'<body>','<body><aside role="note">VibeCast QA — afzonderlijke testbuild, geen productieverbinding.</aside>'));
   await put(file,bytes);

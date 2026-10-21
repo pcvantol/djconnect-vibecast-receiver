@@ -1,6 +1,6 @@
 // Disposable Git repositories only; never mutate active checkout/index for tests.
 import test from 'node:test';import assert from 'node:assert/strict';import {mkdtemp,mkdir,readFile,writeFile,rm} from 'node:fs/promises';
-import {tmpdir} from 'node:os';import path from 'node:path';import {execFileSync,spawnSync} from 'node:child_process';
+import {tmpdir} from 'node:os';import path from 'node:path';import {pathToFileURL} from 'node:url';import {execFileSync,spawnSync} from 'node:child_process';
 const cleanEnv=Object.fromEntries(Object.entries(process.env).filter(([k])=>!k.startsWith('GIT_')));
 async function fixture(){
  const root=await mkdtemp(path.join(tmpdir(),'vibecast-qa-provenance-'));
@@ -8,7 +8,7 @@ async function fixture(){
  for(const [name,data]of Object.entries(files)){await mkdir(path.dirname(path.join(root,name)),{recursive:true});await writeFile(path.join(root,name),data);}
  const git=(...args)=>execFileSync('git',['-c','core.hooksPath=/dev/null',...args],{cwd:root,env:cleanEnv,encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();
  git('init','--quiet');git('add','.');git('-c','user.name=QA Fixture','-c','user.email=qa@example.invalid','commit','--quiet','-m','Synthetic provenance fixture');
- const run=(code,env={})=>spawnSync(process.execPath,['--input-type=module','-e',`import {fixedSourceIdentity,sourceInventory,gitRead} from './scripts/qa_source_identity.mjs';${code}`],{cwd:root,env:{...cleanEnv,...env},encoding:'utf8'});
+ const run=(code,env={},cwd=root)=>spawnSync(process.execPath,['--input-type=module','-e',`import {fixedSourceIdentity,sourceInventory,gitRead} from ${JSON.stringify(pathToFileURL(path.join(root,'scripts/qa_source_identity.mjs')).href)};${code}`],{cwd,env:{...cleanEnv,...env},encoding:'utf8'});
  return{root,git,run};
 }
 test('forged Git overrides cannot redirect source identity to a second repository',async()=>{
@@ -31,4 +31,17 @@ test('dirty and untracked source fail closed, despite Git status hiding tracked 
   await writeFile(path.join(a.root,file),'// original fixture');await writeFile(path.join(a.root,'untracked'),'untracked fixture');
   r=a.run('await fixedSourceIdentity()');assert.notEqual(r.status,0);assert.match(r.stderr,/clean source/);
  }finally{await rm(a.root,{recursive:true,force:true});}
+});
+
+test('a foreign build working directory cannot borrow the module-root source identity',async()=>{
+ const a=await fixture(),b=await fixture();try{
+  const head=a.git('rev-parse','HEAD');
+  // Previous identity reader bound Git alone; unrelated cwd could supply public bytes.
+  const counter=a.run("console.log(gitRead(['rev-parse','HEAD']).toString().trim())",{},b.root);assert.equal(counter.status,0,counter.stderr);assert.equal(counter.stdout.trim(),head);
+  const rejected=a.run('await fixedSourceIdentity()',{},b.root);assert.notEqual(rejected.status,0);assert.match(rejected.stderr,/must run from its real repository root/);
+  const entry=pathToFileURL(path.resolve('scripts/build_bootstrap_qa.mjs')).href;
+  const build=spawnSync(process.execPath,['--input-type=module','-e',`import {buildQA} from ${JSON.stringify(entry)};await buildQA();`],{cwd:b.root,env:cleanEnv,encoding:'utf8'});
+  assert.notEqual(build.status,0);assert.match(build.stderr,/must run from its real repository root/);
+  await assert.rejects(readFile(path.join(b.root,'dist/bootstrap-qa/build-manifest.json')),{code:'ENOENT'});
+ }finally{await rm(a.root,{recursive:true,force:true});await rm(b.root,{recursive:true,force:true});}
 });

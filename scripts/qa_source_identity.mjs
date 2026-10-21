@@ -7,6 +7,7 @@ export const sha256=x=>createHash('sha256').update(x).digest('hex');
 export function gitRead(args){return execFileSync('git',['--no-optional-locks',...args],{cwd:repositoryRoot,env:env(),maxBuffer:32*1024*1024});}
 export async function fixedSourceIdentity(expected){
  const root=await realpath(repositoryRoot);
+ if(await realpath(process.cwd())!==root)throw Error('QA must run from its real repository root');
  if(await realpath(gitRead(['rev-parse','--show-toplevel']).toString().trim())!==root)throw Error('QA real worktree required');
  if(gitRead(['rev-parse','--is-inside-work-tree']).toString().trim()!=='true')throw Error('QA real worktree required');
  const head=gitRead(['rev-parse','--verify','HEAD^{commit}']).toString().trim();
