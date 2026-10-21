@@ -10,7 +10,9 @@
     "test:bootstrap": "node --test tests/bootstrap/*.test.mjs",
     "test:browser": "playwright test",
     "check:bootstrap": "npm run test:bootstrap && npm run build:bootstrap && npm run test:browser",
-    "test:http-ui": "node qualification/http-ui/run.mjs"
+    "test:http-ui": "node qualification/http-ui/run.mjs",
+    "build:bootstrap:qa": "node scripts/build_bootstrap_qa.mjs",
+    "verify:bootstrap:qa": "node scripts/verify_bootstrap_qa.mjs"
   },
   "license": "MIT",
   "devDependencies": {

@@ -19,9 +19,18 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm test
       - run: npm run build:bootstrap
+      - run: npm run build:bootstrap:qa
       - run: npx playwright install --with-deps chromium webkit
       - run: npm run test:browser
       - run: node scripts/verify_bootstrap.mjs dist/bootstrap "$GITHUB_SHA"
+      - run: node scripts/verify_bootstrap_qa.mjs dist/bootstrap-qa "$GITHUB_SHA"
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: bootstrap-qa-${{ github.sha }}
+          path: dist/bootstrap-qa/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 2
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: bootstrap-${{ github.sha }}

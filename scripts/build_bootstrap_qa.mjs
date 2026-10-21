@@ -1,0 +1,53 @@
+// Closed source-only QA derivation, never an execution/deployment admission.
+import {readFile,writeFile,mkdir,readdir,rm,lstat} from 'node:fs/promises';
+import {createHash} from 'node:crypto';import {execFileSync} from 'node:child_process';
+import path from 'node:path';import {fileURLToPath} from 'node:url';import {build as bundle} from 'esbuild';
+export const qa=Object.freeze({product:'vibecast-tv-bootstrap-qa',browser:'https://qa.vibecast.tv',service:'https://api-vibecast-qa.djconnect.dev',worker:'djconnect-api-vibecast-qa'});
+export const sourcePins=Object.freeze({
+ 'bootstrap/src/wire.mjs':'2b89c5a139c02a5267cf2f68cff9c14f1e656ccad6e5ea453449c5bc7d79ec33',
+ 'bootstrap/src/wire-schema.mjs':'01272335b2b4d5c3ee43b98fae4dfd147bbe971307a88a447580c5a73b5a7700',
+ 'bootstrap/src/app.mjs':'9e97418bce5f4210979c36a16fb97a3b9f4f202912dcac48b147b7f84ccbe186',
+ 'bootstrap/public/_headers':'081df3f86740c947fad701419df794cb215ac42ad5837955b81415babf943501'
+});
+const hash=x=>createHash('sha256').update(x).digest('hex');
+export function replaceOnce(source,needle,replacement){if(source.split(needle).length!==2)throw Error('QA transform count drift');return source.replace(needle,replacement);}
+export function transform(file,source){
+ if(hash(source)!==sourcePins[file])throw Error('QA protected input drift: '+file);
+ if(file==='bootstrap/src/wire.mjs')return replaceOnce(source,"ORIGIN='https://vibecast.tv', SERVICE='https://api.djconnect.dev'",`ORIGIN='${qa.browser}', SERVICE='${qa.service}'`);
+ if(file==='bootstrap/src/wire-schema.mjs')return replaceOnce(source,'"const": "https://api.djconnect.dev"',`"const": "${qa.service}"`);
+ if(file==='bootstrap/public/_headers')return replaceOnce(source,"connect-src 'none'",`connect-src ${qa.service}`);
+ if(file==='bootstrap/src/app.mjs')return "import {createQAAdapter,QA_BROWSER} from '../qa/adapter.mjs';\n"+replaceOnce(source,
+ 'const controller = new BootstrapController({ adapter: unavailableAdapter, render: state => {current=state;paint();}, navigate: url => location.replace(url) });',
+ 'const factory=()=>createQAAdapter();\nconst controller = new BootstrapController({ adapter: factory(), adapterFactory: factory, render: state => {current=state;paint();}, navigate: url => {if(location.origin===QA_BROWSER)location.replace(url);} });');
+ throw Error('Unknown QA transform');
+}
+export async function buildQA(sourceSHA=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim()){
+ if(!/^[a-f0-9]{40}$/.test(sourceSHA))throw Error('Exact source SHA required');
+ const output='dist/bootstrap-qa';
+ // Check all fixed transforms before any output mutation. No caller-supplied paths/origins.
+ const inputs={};for(const file of Object.keys(sourcePins))inputs[file]=transform(file,await readFile(file,'utf8'));
+ const plugin={name:'closed-qa-graph',setup(b){
+  b.onLoad({filter:/[\\/]bootstrap[\\/]src[\\/](wire|wire-schema|app)\.mjs$/},async args=>({contents:inputs[path.relative(process.cwd(),args.path).split(path.sep).join('/')],loader:'js',resolveDir:path.dirname(args.path)}));
+  b.onResolve({filter:/\.\.\/qa\/adapter\.mjs$/},()=>({path:'./qa-adapter.mjs',external:true}));
+ }};
+ const options={bundle:true,format:'esm',platform:'browser',target:'es2022',write:false,legalComments:'inline',plugins:[plugin]};
+ const adapter=(await bundle({...options,entryPoints:['bootstrap/qa/adapter.mjs']})).outputFiles[0].contents;
+ const app=(await bundle({...options,entryPoints:['bootstrap/src/app.mjs']})).outputFiles[0].contents;
+ // Refuse symlink destinations/parents instead of following an unrelated tree.
+ for(const dir of ['dist',output]){try{if((await lstat(dir)).isSymbolicLink())throw Error('Unsafe QA output');}catch(e){if(e.code!=='ENOENT')throw e;}}
+ await rm(output,{recursive:true,force:true});await mkdir(output,{recursive:true});const files={};
+ async function put(file,bytes){await writeFile(path.join(output,file),bytes);files[file]=hash(bytes);}
+ for(const file of (await readdir('bootstrap/public')).sort()){
+  if(file==='app.mjs'||file==='qa-adapter.mjs')throw Error('QA output collision');
+  if((await lstat('bootstrap/public/'+file)).isSymbolicLink())throw Error('Unsafe QA input');
+  let bytes=await readFile('bootstrap/public/'+file);
+  if(file==='_headers')bytes=Buffer.from(inputs['bootstrap/public/_headers']);
+  if(file==='index.html')bytes=Buffer.from(replaceOnce(bytes.toString(),'<body>','<body><aside role="note">VibeCast QA — afzonderlijke testbuild, geen productieverbinding.</aside>'));
+  await put(file,bytes);
+ }
+ await put('app.mjs',app);await put('qa-adapter.mjs',adapter);
+ const manifest={schema:1,sourceSHA,product:qa.product,variant:'QA_ONLY',rendezvous:'SOURCE_REVIEW_ONLY',tuple:qa,admitted_test_tuple:null,activation_artifact:null,service_qualified:false,native_accepted:false,sourcePins,files:Object.fromEntries(Object.entries(files).sort())};
+ const data=JSON.stringify(manifest,null,2)+'\n';await writeFile(output+'/build-manifest.json',data);
+ const hashes={...manifest.files,'build-manifest.json':hash(data)};await writeFile(output+'/SHA256SUMS',Object.entries(hashes).sort().map(([f,h])=>`${h}  ${f}\n`).join(''));return manifest;
+}
+if(path.resolve(process.argv[1]||'')===fileURLToPath(import.meta.url)){if(process.argv.length!==2)throw Error('QA build takes no configuration');await buildQA();}

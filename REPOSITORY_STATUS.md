@@ -1,3 +1,14 @@
+# Fixed isolated QA source WIP — 2026-10-21
+
+Same sole receiver writer, branch `codex/vibecast-isolated-qa-build`, baseabf69b6.
+[Bounded source proposal](docs/qualification/2026-10-21-fixed-qa-source.md): fixed
+qa.vibecast.tv / api-vibecast-qa.djconnect.dev, separate QA_ONLY artifact and
+verifier; no deployment, production activation, native or Core B acceptance.
+Candidate validation/reviews and joint producer source disposition pending.
+Timer OFF; production/renderer/API379 preserved.
+
+---
+
 # Current VibeCast.tv Brand2.0.1 / canonical wordmark delivery — 2026-10-20
 
 SourcePR42 protected57938b7/tree3a2b6d68 equals twice reviewedf0cee8b; ownmain
