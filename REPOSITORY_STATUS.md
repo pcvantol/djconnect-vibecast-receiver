@@ -1,3 +1,15 @@
+# Isolated QA source delivered — 2026-10-22
+
+SourcePR44 protected29fd9c576d52d14947ef2ea00e8ff8c75c18c84a, exact twice
+reviewed tree5e00324b. PR/main CI39840901071/39841363528 SUCCESS; actual main QA
+artifact verified. [Separate Finalization](docs/qualification/2026-10-22-qa-source-finalization.md)
+records exact source, review, artifact and skipped-provider metadata evidence;
+its own protected delivery/final-main reconciliation remains pending.
+Sole writer branchcodex/vibecast-qa-source-finalization; timerOFF. Public Cast/web
+production unchanged; QA not deployed, rendezvous/native/HA/physical gates OPEN.
+
+---
+
 # Fixed isolated QA source WIP — 2026-10-21
 
 Same sole receiver writer, branch `codex/vibecast-isolated-qa-build`, baseabf69b6.
